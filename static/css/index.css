@@ -42,8 +42,9 @@ body {
   display: inline-block;
 }
 
-/* Institution logos sit beside the title on screens 1280px and wider; on
-   narrower screens they form a row above the title so they never overlap it. */
+/* Institution logos sit beside the title on screens 1024px and wider: the
+   hero's text column is narrowed just enough to leave room for them. On
+   narrower screens there is no room, so they form a row above the title. */
 .institution-logos {
   display: flex;
   justify-content: space-between;
@@ -53,11 +54,11 @@ body {
 
 .institution-logos img {
   display: block;
-  height: 120px;
+  height: 100px;
   width: auto;
 }
 
-@media screen and (min-width: 1280px) {
+@media screen and (min-width: 1024px) {
   .hero {
     position: relative;
   }
@@ -73,6 +74,14 @@ body {
 
   .institution-logos a {
     pointer-events: auto;
+  }
+
+  .institution-logos img {
+    height: 150px;
+  }
+
+  .hero .hero-body .container {
+    max-width: min(960px, calc(100vw - 2 * (2.5rem + 150px)));
   }
 }
 
