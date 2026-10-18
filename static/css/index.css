@@ -137,78 +137,108 @@ mjx-container[display="true"] {
   max-width: 100%;
 }
 
-/* Relation cascade and action tables; relation colours follow the overview figure. */
-.rel-merge { --rel: #3c8a5a; --rel-bg: #e8f5ec; }
-.rel-param { --rel: #b8791f; --rel-bg: #fdf2df; }
-.rel-dist { --rel: #c04848; --rel-bg: #fbe9e9; }
-.rel-comp { --rel: #3d7ab8; --rel-bg: #e8f0fa; }
-.rel-unc { --rel: #6b6b6b; --rel-bg: #efefef; }
-
-.grp-consolidate { --grp: #b8791f; --grp-bg: #fdf2df; }
-.grp-refine { --grp: #3d7ab8; --grp-bg: #e8f0fa; }
-.grp-control { --grp: #6b6b6b; --grp-bg: #efefef; }
-
-.cascade,
-.actions {
-  width: 100%;
-  font-size: 0.92rem;
-  border-collapse: separate;
-  border-spacing: 0;
-}
+/* Relation cascade. Fills and outlines are the relation boxes of the overview figure;
+   --rel-ink is a darker shade of the same hue for readable text. */
+.rel-merge { --rel: #3d8b5a; --rel-bg: #eef8f1; --rel-ink: #2f6e47; }
+.rel-param { --rel: #d38300; --rel-bg: #fff7e8; --rel-ink: #9a5f00; }
+.rel-comp { --rel: #4a7ea9; --rel-bg: #f2f6fa; --rel-ink: #3a6890; }
+.rel-dist { --rel: #c54a4a; --rel-bg: #fdeeee; --rel-ink: #a63b3b; }
+.rel-unc { --rel: #8a8a8a; --rel-bg: #f4f4f4; --rel-ink: #5f5f5f; }
 
 .cascade {
-  min-width: 640px;
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+  border-collapse: separate;
+  border-spacing: 0 8px;
 }
 
-.actions {
-  min-width: 520px;
-}
-
-.cascade caption,
-.actions caption {
+.cascade caption {
   caption-side: top;
-  text-align: left;
+  padding-bottom: 0.25rem;
   font-size: 0.88rem;
+  text-align: center;
   color: #555;
-  padding-bottom: 0.75rem;
 }
 
-table.cascade thead th,
-table.actions thead th {
-  padding: 0.5rem 0.9rem;
-  border-bottom: 2px solid #8b0000;
-  font-size: 0.75rem;
+table.cascade thead th {
+  padding: 0 1rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-align: left;
   text-transform: uppercase;
-  color: #888;
+  color: #999;
 }
 
-table.cascade td,
-table.actions td {
-  padding: 0.85rem 0.9rem;
-  border-bottom: 1px solid #f0eded;
+table.cascade thead th:first-child {
+  text-align: center;
+}
+
+table.cascade thead th:last-child {
+  text-align: right;
+}
+
+table.cascade td {
+  padding: 0.6rem 1.1rem;
   text-align: left;
   vertical-align: middle;
 }
 
-/* The numbered check column is drawn as a connected cascade. */
+/* Each relation is a rounded band, like the relation boxes in the figure. */
+table.cascade td.rel-name,
+table.cascade td.rel-edit {
+  border-top: 1.5px solid var(--rel);
+  border-bottom: 1.5px solid var(--rel);
+  background: var(--rel-bg);
+}
+
+table.cascade td.rel-name {
+  border-left: 1.5px solid var(--rel);
+  border-radius: 10px 0 0 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #2b2b2b;
+}
+
+table.cascade td.rel-edit {
+  border-right: 1.5px solid var(--rel);
+  border-radius: 0 10px 10px 0;
+  text-align: right;
+}
+
+.cascade tbody.side td.rel-name,
+.cascade tbody.side td.rel-edit {
+  border-top-style: dashed;
+  border-bottom-style: dashed;
+}
+
+.cascade tbody.side td.rel-name {
+  border-left-style: dashed;
+}
+
+.cascade tbody.side td.rel-edit {
+  border-right-style: dashed;
+}
+
+/* The check column is a numbered line joining the bands in order. */
 table.cascade td.step-cell {
   position: relative;
-  width: 4.5rem;
+  width: 3.5rem;
+  padding: 0;
   text-align: center;
 }
 
 .cascade tbody:not(.side) .step-cell::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -4px;
+  bottom: -4px;
   left: 50%;
   width: 2px;
   margin-left: -1px;
-  background: #e4d8d8;
+  background: #e2d9d9;
 }
 
 .cascade tbody:not(.side) tr:first-child .step-cell::before {
@@ -228,86 +258,45 @@ table.cascade td.step-cell {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: var(--rel);
+  background: var(--rel-ink);
   box-shadow: 0 0 0 4px #fff;
   font-weight: 700;
   color: #fff;
 }
 
 .step-tag {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--rel);
-}
-
-.cascade td:nth-child(2) {
-  white-space: nowrap;
+  color: var(--rel-ink);
 }
 
 .sym {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  margin-right: 0.6rem;
-  border-radius: 8px;
-  background: var(--rel-bg);
-  font-size: 1.05rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-right: 0.75rem;
+  border: 1.5px solid var(--rel);
+  border-radius: 50%;
+  background: #fff;
   font-weight: 700;
-  color: var(--rel);
+  color: var(--rel-ink);
 }
 
 .pill {
   display: inline-block;
-  padding: 0.2rem 0.7rem;
+  padding: 0.2rem 0.75rem;
+  border: 1px solid var(--rel);
   border-radius: 999px;
-  background: var(--rel-bg);
+  background: #fff;
   font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
-  color: var(--rel);
+  color: var(--rel-ink);
 }
-
-.cascade tbody.side td {
-  background: #fcfafa;
-}
-
-.cascade tbody.side tr:first-child td {
-  border-top: 2px dashed #e6dcdc;
-}
-
-/* Action groups match the Consolidate / Refine / Control boxes in Figure 1(b). */
-table.actions th.grp {
-  width: 9rem;
-  padding: 0.85rem 1rem;
-  border-left: 4px solid var(--grp);
-  border-bottom: 3px solid #fff;
-  background: var(--grp-bg);
-  font-family: 'Google Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-align: left;
-  vertical-align: middle;
-  color: var(--grp);
-}
-
-.act {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  background: var(--grp-bg);
-  font-family: monospace;
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
-  color: var(--grp);
-}
-
 /* Findings, as cards with a dark red left border. */
 .finding-list {
   display: grid;

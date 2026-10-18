@@ -175,46 +175,17 @@
     <div class="table-container">
       <table class="cascade">
         <caption>Relations in the order the classifier checks them, from cheapest and strictest to most expensive. It stops at the first relation that holds.</caption>
-        <thead><tr><th>Check</th><th>Relation</th><th>Certified when (from outputs only)</th><th>Permits</th></tr></thead>
+        <thead><tr><th>Check</th><th>Relation</th><th>Permits</th></tr></thead>
         <tbody>
-          <tr class="rel-merge"><td class="step-cell"><span class="step">1</span></td><td><span class="sym">=</span><b>Exact</b></td><td>Outputs are identical across the battery at every shared parameter setting, up to a negligible L<sub>&infin;</sub> tolerance.</td><td><span class="pill">Merge</span></td></tr>
-          <tr class="rel-merge"><td class="step-cell"><span class="step">2</span></td><td><span class="sym">&asymp;</span><b>Perceptual</b></td><td>Human-indistinguishable: worst-case LPIPS below &tau;<sub>pc</sub>, with an SSIM floor guarding LPIPS blind spots.</td><td><span class="pill">Merge</span></td></tr>
-          <tr class="rel-param"><td class="step-cell"><span class="step">3</span></td><td><span class="sym">&sube;</span><b>Subsumption</b></td><td>Directional: some setting of one skill reproduces every setting of the other, e.g., a fixed-angle rotation inside rotate-by-degrees.</td><td><span class="pill">Parameterize</span></td></tr>
-          <tr class="rel-param"><td class="step-cell"><span class="step">4</span></td><td><span class="sym">&equiv;</span><b>Semantic-preserving</b></td><td>Not pixel- or perceptually identical, but in the same region of DINO feature space, e.g., two edge detectors.</td><td><span class="pill">Parameterize, never merge</span></td></tr>
-          <tr class="rel-dist"><td class="step-cell"><span class="step">5</span></td><td><span class="sym">&ne;</span><b>Distinct</b></td><td>The default verdict by elimination, including spatial-extent mismatches with no subsumption certificate.</td><td><span class="pill">Keep separate</span></td></tr>
+          <tr class="rel-merge"><td class="step-cell"><span class="step">1</span></td><td class="rel-name"><span class="sym">=</span>Exact</td><td class="rel-edit"><span class="pill">Merge</span></td></tr>
+          <tr class="rel-merge"><td class="step-cell"><span class="step">2</span></td><td class="rel-name"><span class="sym">&asymp;</span>Perceptual</td><td class="rel-edit"><span class="pill">Merge</span></td></tr>
+          <tr class="rel-param"><td class="step-cell"><span class="step">3</span></td><td class="rel-name"><span class="sym">&sube;</span>Subsumption</td><td class="rel-edit"><span class="pill">Parameterize</span></td></tr>
+          <tr class="rel-param"><td class="step-cell"><span class="step">4</span></td><td class="rel-name"><span class="sym">&equiv;</span>Semantic-preserving</td><td class="rel-edit"><span class="pill">Parameterize, never merge</span></td></tr>
+          <tr class="rel-dist"><td class="step-cell"><span class="step">5</span></td><td class="rel-name"><span class="sym">&ne;</span>Distinct</td><td class="rel-edit"><span class="pill">Keep separate</span></td></tr>
         </tbody>
         <tbody class="side">
-          <tr class="rel-unc"><td class="step-cell"><span class="step-tag">Abstain</span></td><td><span class="sym">?</span><b>Uncertain</b></td><td>The deciding distance clears a calibrated threshold too narrowly (within a band &delta;).</td><td><span class="pill">Human review</span></td></tr>
-          <tr class="rel-comp"><td class="step-cell"><span class="step-tag">Advisory</span></td><td><span class="sym">&oplus;</span><b>Complementary</b></td><td>The pair composes into a meaningful pipeline, e.g., dilation and erosion, confirmed by an executed composition test.</td><td><span class="pill">Advisory only</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="title is-4">Verifier-gated curation</h3>
-    <div class="content has-text-justified">
-      <p>
-        A corrupted library is the environment of a curation agent, here a frozen language model used as-is. The agent
-        proposes actions from a fixed set; every structural edit takes effect only if the verifier certifies a relation
-        that permits it, and the library is left unchanged otherwise.
-      </p>
-    </div>
-    <div class="table-container">
-      <table class="actions">
-        <caption><b>Table 1.</b> Description of the action space of the curation agent, grouped as in Figure 1(b).</caption>
-        <thead><tr><th>Group</th><th>Action</th><th>Meaning</th></tr></thead>
-        <tbody class="grp-consolidate">
-          <tr><th class="grp" rowspan="2" scope="rowgroup">Consolidate</th><td><span class="act"><i class="fas fa-compress-arrows-alt"></i>merge</span></td><td>Merge redundant skills</td></tr>
-          <tr><td><span class="act"><i class="fas fa-sliders-h"></i>parameterize</span></td><td>Fold a specialization into a more general parameterized skill</td></tr>
-        </tbody>
-        <tbody class="grp-refine">
-          <tr><th class="grp" rowspan="4" scope="rowgroup">Refine</th><td><span class="act"><i class="fas fa-pen"></i>modify</span></td><td>Modify metadata/schema or function behavior</td></tr>
-          <tr><td><span class="act"><i class="fas fa-plus"></i>add</span></td><td>Add a new skill</td></tr>
-          <tr><td><span class="act"><i class="fas fa-trash-alt"></i>remove</span></td><td>Remove a skill</td></tr>
-          <tr><td><span class="act"><i class="fas fa-code-branch"></i>split</span></td><td>Split one skill into multiple skills</td></tr>
-        </tbody>
-        <tbody class="grp-control">
-          <tr><th class="grp" rowspan="2" scope="rowgroup">Control</th><td><span class="act"><i class="fas fa-search"></i>retrieve</span></td><td>Retrieve/query a skill</td></tr>
-          <tr><td><span class="act"><i class="fas fa-stop-circle"></i>end</span></td><td>Stop the episode</td></tr>
+          <tr class="rel-unc"><td class="step-cell"><span class="step-tag">Abstain</span></td><td class="rel-name"><span class="sym">?</span>Uncertain</td><td class="rel-edit"><span class="pill">Human review</span></td></tr>
+          <tr class="rel-comp"><td class="step-cell"><span class="step-tag">Advisory</span></td><td class="rel-name"><span class="sym">&oplus;</span>Complementary</td><td class="rel-edit"><span class="pill">Advisory only</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -224,7 +195,7 @@
 
 <section class="section" id="results">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 section-title">Results</h2>
+    <h2 class="title is-3 section-title">Experimental Results</h2>
     <div class="slider">
       <div class="slider-tabs">
         <button class="slider-tab" type="button" data-go="0"><i class="fas fa-robot"></i> Curation agents</button>
