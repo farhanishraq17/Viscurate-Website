@@ -42,18 +42,47 @@ body {
   display: inline-block;
 }
 
+/* Institution logos sit in the hero's top corners; on narrower screens they
+   form a row above the title so they never overlap it. */
 .institution-logos {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2.5rem;
-  margin: 1rem 0 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.25rem 2rem 0;
 }
 
 .institution-logos img {
   display: block;
-  height: 72px;
+  height: 80px;
   width: auto;
+}
+
+@media screen and (min-width: 1216px) {
+  .hero {
+    position: relative;
+  }
+
+  .institution-logos {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+  }
+
+  .institution-logos a {
+    pointer-events: auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .institution-logos {
+    padding: 1rem 1rem 0;
+  }
+
+  .institution-logos img {
+    height: 56px;
+  }
 }
 
 /* VisCurate additions */
