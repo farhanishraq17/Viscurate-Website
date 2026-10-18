@@ -81,10 +81,6 @@ section[id] {
   border-radius: 10px;
 }
 
-.figure-block {
-  margin-top: 2rem;
-}
-
 .caption {
   font-size: 0.9rem;
   color: #555;
@@ -98,17 +94,13 @@ mjx-container[display="true"] {
   max-width: 100%;
 }
 
-/* Tables styled like the paper (booktabs rules, highlighted cells). */
+/* Tables styled like the paper (booktabs rules). */
 .paper-table {
   width: auto;
   margin: 0 auto;
   font-size: 0.92rem;
   border-top: 2px solid #222;
   border-bottom: 2px solid #222;
-}
-
-.paper-table.full {
-  width: 100%;
 }
 
 .paper-table caption {
@@ -140,16 +132,6 @@ table.paper-table td {
   font-weight: 600;
   border-bottom: 1px solid #222;
 }
-
-.paper-table tbody + tbody tr:first-child td {
-  border-top: 1px solid #222;
-}
-
-.paper-table .c-bad { background: #fcc9c9; }
-.paper-table .c-warn { background: #fde3cf; }
-.paper-table .c-good { background: #e2fbe2; }
-.paper-table .c-best { background: #dcf0fb; font-weight: 600; }
-.paper-table tr.ours { background: #e9f5fc; font-weight: 600; }
 
 /* Relation cards, colored like the overview figure. */
 .rel-card {
@@ -237,9 +219,97 @@ table.paper-table td {
 }
 
 .finding-card {
-  height: 100%;
   padding: 1rem 1.25rem;
   border-left: 4px solid #8b0000;
   background: #fafafa;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Figure gallery with a click-to-enlarge lightbox. */
+.fig-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.fig-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #eee;
+  border-top: 3px solid #8b0000;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fig-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.fig-card.wide {
+  grid-column: 1 / -1;
+}
+
+.fig-zoom {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+}
+
+.fig-zoom img {
+  width: 100%;
+}
+
+.fig-card.wide .fig-zoom img {
+  max-width: 760px;
+}
+
+.fig-card figcaption {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+  color: #555;
+  text-align: justify;
+}
+
+.fig-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  color: #8b0000;
+}
+
+@media screen and (max-width: 768px) {
+  .fig-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lightbox {
+  max-width: 92vw;
+  max-height: 92vh;
+  padding: 1rem;
+  border: 0;
+  border-radius: 10px;
+  outline: none;
+  cursor: zoom-out;
+}
+
+.lightbox::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.lightbox img {
+  display: block;
+  width: min(1200px, 88vw);
+  max-height: 85vh;
+  object-fit: contain;
 }

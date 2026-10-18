@@ -33,7 +33,7 @@
       <a class="navbar-item" href="#overview">Overview</a>
       <a class="navbar-item" href="#method">Method</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
-      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#figures">Figures</a>
       <a class="navbar-item" href="#findings">Findings</a>
       <a class="navbar-item" href="#BibTeX">Citation</a>
       <a class="navbar-item" href="https://github.com/farhanishraq17/VisCurate-" aria-label="Code">
@@ -279,142 +279,55 @@
 </section>
 
 
-<section class="section" id="results">
+<section class="section" id="figures">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 section-title">Results</h2>
-
-    <h3 class="title is-4">Text and code do not predict visual behavior</h3>
-    <div class="content has-text-justified">
-      <p>
-        If names, descriptions, or source code told us how a skill behaves, a matcher built on them should make safe
-        merge decisions on <i>G</i><sub>0</sub>'s 944 designed pairs. Since <i>G</i><sub>0</sub> designates no true
-        duplicates, every merge proposed on it is false by construction.
-      </p>
+    <h2 class="title is-3 section-title">Figures</h2>
+    <div class="fig-grid">
+      <figure class="fig-card">
+        <a class="fig-zoom" href="./static/images/f1_by_rho.png"><img src="./static/images/f1_by_rho.png"
+           alt="Mean F1 by corruption rate for GPT-5.5, Qwen 3.5 27B, Gemma 4 12B and Qwen 3.5 4B."></a>
+        <figcaption><span class="fig-label">Figure 2</span> Mean F1 by corruption rate &rho; for the four strongest
+          curators (<i>n</i> = 30 episodes per cell). Difficulty is not monotone in &rho; as GPT-5.5 improves as defects
+          multiply, Qwen 3.5 27B stays flat, and the smaller models collapse.</figcaption>
+      </figure>
+      <figure class="fig-card">
+        <a class="fig-zoom" href="./static/images/relation_quality.svg"><img src="./static/images/relation_quality.svg"
+           alt="Per-relation precision, recall and F1 of the verifier for subsumption, semantic-preserving, complementary and distinct."></a>
+        <figcaption><span class="fig-label">Figure A.1</span> Per-relation precision, recall, and F1 of the
+          output-grounded verifier on <i>G</i><sub>0</sub> (one-vs-rest). <span class="vc">Exact</span> and
+          <span class="vc">Perceptual</span> have no support in a clean reference graph and are omitted.</figcaption>
+      </figure>
+      <figure class="fig-card">
+        <a class="fig-zoom" href="./static/images/ended_rate.png"><img src="./static/images/ended_rate.png"
+           alt="Bar chart of the share of runs each model ended with the END action."></a>
+        <figcaption><span class="fig-label">Figure A.2</span> Percentage of runs that the models have ended using the
+          <span class="vc">End</span> action.</figcaption>
+      </figure>
+      <figure class="fig-card">
+        <a class="fig-zoom" href="./static/images/screening_tradeoff.svg"><img src="./static/images/screening_tradeoff.svg"
+           alt="Merge recall and share of pairs discarded as the screening neighbour count k grows."></a>
+        <figcaption><span class="fig-label">Figure A.3</span> Screening trade-off across neighbor count <i>k</i> at
+          radius 0.05, over ten corrupted instances (80 mergeable positives, 76,031 pairs). Merge recall saturates at
+          <i>k</i> = 10 while 95.1% of pairs are still discarded, and the curves are insensitive to radius from 0.05 to
+          2.0.</figcaption>
+      </figure>
+      <figure class="fig-card wide">
+        <a class="fig-zoom" href="./static/images/candidate_growth.svg"><img src="./static/images/candidate_growth.svg"
+           alt="Candidate-set size and share of all pairs proposed by screening as the library subsample grows."></a>
+        <figcaption><span class="fig-label">Figure A.4</span> Candidate-set growth over nested random subsamples of
+          <i>L</i><sub>0</sub>. The log-log fit |<i>C</i>| = 2.38&thinsp;<i>n</i><sup>1.13</sup>
+          (<i>R</i><sup>2</sup> = 0.998) is close to linear, and the share of all pairs that screening proposes falls
+          from 66.7% at <i>n</i> = 10 to 8.2% at <i>n</i> = 100.</figcaption>
+      </figure>
+      <figure class="fig-card wide">
+        <a class="fig-zoom" href="./static/images/cache_footprint.svg"><img src="./static/images/cache_footprint.svg"
+           alt="Cache footprint by library size for raw output caches and features-only caches, on a log scale."></a>
+        <figcaption><span class="fig-label">Figure A.5</span> Cache footprint by library size for (a) raw output sets
+          and (b) backend features only. The measured unit is 214.8 MB per skill for raw outputs over the 177-probe
+          battery (median of 8 builtin skills), against an analytic features-only cache, a 395&times; saving at
+          10<sup>4</sup> skills.</figcaption>
+      </figure>
     </div>
-    <div class="table-container">
-      <table class="paper-table">
-        <caption>
-          <b>Table 2.</b> The baseline ladder on the 944 designed pairs of <i>G</i><sub>0</sub> at matched operating
-          points. FPR<sub>dist</sub>: false-merge rate on truly-<span class="vc">Distinct</span> pairs, in percent.
-          FM<sub>hard</sub>: false merges accepted on the six engineered hard negatives.
-          <span class="vc">VisCurate</span> abstains on 1.5% of decisions; no baseline abstains. The source-reading LLM
-          judge is scored on a 120-pair subsample (mean of three repeats), so its FPR is not directly comparable and is
-          omitted.
-        </caption>
-        <thead><tr><th>Method</th><th>Reads</th><th>FPR<sub>dist</sub> (%) &darr;</th><th>FM<sub>hard</sub> &darr;</th></tr></thead>
-        <tbody>
-          <tr><td>Name match</td><td>name</td><td class="c-bad">5.40</td><td class="c-bad">5</td></tr>
-          <tr><td>TF&ndash;IDF cosine</td><td>description</td><td class="c-good">0.21</td><td class="c-good">0</td></tr>
-          <tr><td>Sentence embedding</td><td>description</td><td class="c-bad">5.61</td><td class="c-bad">5</td></tr>
-          <tr><td>Code embedding</td><td>source</td><td class="c-warn">1.80</td><td class="c-bad">4</td></tr>
-          <tr><td>AST (structural)</td><td>source</td><td class="c-good">0.00</td><td class="c-good">0</td></tr>
-          <tr><td>AST (semantic)</td><td>source</td><td class="c-good">0.00</td><td class="c-good">0</td></tr>
-          <tr><td>LLM judge</td><td>description</td><td class="c-good">0.11</td><td class="c-warn">1</td></tr>
-          <tr><td>LLM judge</td><td>source</td><td>&ndash;</td><td class="c-good">0</td></tr>
-        </tbody>
-        <tbody>
-          <tr class="ours"><td><span class="vc">VisCurate</span> (ours)</td><td>outputs</td><td>0.00</td><td>0</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="title is-4">Redundancy recovered by the verifier</h3>
-    <div class="content has-text-justified">
-      <p>
-        The corrupted graphs <i>G</i><sub>&rho;</sub> carry known relations by construction, including injected
-        duplicates, so they measure how much real redundancy the verifier recovers: 13,658 labeled pairs across all 300
-        instances, 3,310 of them truly mergeable.
-      </p>
-    </div>
-    <div class="table-container">
-      <table class="paper-table">
-        <caption>
-          <b>Table 3.</b> Verifier self-validation against ground-truth graphs <i>G</i><sub>&rho;</sub> (300 instances,
-          13,658 pairs). The binary merge decision scores recall 0.512 (exact 95% CI [0.495, 0.530]) at precision 1.000
-          (tp/fp/fn = 1,696/0/1,614).
-        </caption>
-        <thead><tr><th>Relation</th><th>Support</th><th>Recall</th><th>Precision</th></tr></thead>
-        <tbody>
-          <tr><td>Exact</td><td>1,640</td><td>0.968</td><td>1.000</td></tr>
-          <tr><td>Perceptual</td><td>1,670</td><td>0.046</td><td>0.704</td></tr>
-          <tr><td>Subsumption</td><td>4,672</td><td>0.758</td><td>0.996</td></tr>
-          <tr><td>Semantic-Preserving</td><td>3,424</td><td>0.319</td><td>0.278</td></tr>
-          <tr><td>Complementary</td><td>310</td><td>0.000</td><td>0.000</td></tr>
-          <tr><td>Distinct</td><td>1,942</td><td>0.384</td><td>0.188</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="content has-text-justified">
-      <p>
-        Byte-identical duplicates are found almost always (<span class="vc">Exact</span> recall 0.968) and
-        near-duplicates almost never (<span class="vc">Perceptual</span> recall 0.046), because 1,594 of 1,670
-        <span class="vc">Perceptual</span> pairs are labeled <span class="vc">Semantic-Preserving</span>, one
-        conservative notch below the label that would allow their merge. On an expanded slice of 69 engineered hard
-        negatives, the verifier makes 0/69 false merges.
-      </p>
-    </div>
-
-    <h3 class="title is-4">Real, uncurated libraries</h3>
-    <div class="columns">
-      <div class="column"><div class="finding-card">
-        <p class="stat-num">92%</p>
-        <p><b>Cross-version.</b> <code>pilgram 2.0.0</code> and <code>pilgram 2.0.10</code> share 25 filters. 23 are
-          byte-identical on all 177 probes and certified <span class="vc">Exact</span>; the verifier correctly declines
-          to merge the two that really diverged.</p>
-      </div></div>
-      <div class="column"><div class="finding-card">
-        <p class="stat-num">10 of 17</p>
-        <p><b>Cross-library.</b> Across 93 implementations from OpenCV, PIL, scikit-image, torchvision, Kornia, and
-          Albumentations, documentation groups 17 pairs as directly equivalent, yet execution certifies only 10 as
-          mergeable at aligned parameters.</p>
-      </div></div>
-    </div>
-
-    <h3 class="title is-4">LLM agent curation</h3>
-    <div class="content has-text-justified">
-      <p>
-        We evaluate nine language-model curators from four families (Llama 3.1 and 3.2, Qwen 3.5, and Gemma 4 at
-        multiple sizes, and GPT-5.5), each on the same 300 instances with a budget of 200 actions.
-      </p>
-    </div>
-    <div class="table-container">
-      <table class="paper-table full">
-        <caption>
-          <b>Table 4.</b> Performance of nine curation agents on the corrupted-library benchmark. Every cell aggregates
-          the same 300 instances, with instance-clustered bootstrap 95% CIs (2,000 resamples). &mu;P, &mu;R, &mu;F1: mean
-          per-episode precision, recall, and F1. mF1: micro F1. IS: Intrinsic Score. AC: action cost. CR: compression
-          ratio. Comp.: mean compression. Pred.: mean predicted actions. Higher CR, Comp., and Pred. are not better on
-          their own and carry no arrow, since they are only meaningful alongside precision or F1.
-        </caption>
-        <thead><tr><th>Model</th><th>&mu;P &uarr;</th><th>&mu;R &uarr;</th><th>&mu;F1 &uarr; [95% CI]</th><th>mF1 &uarr;</th><th>IS &uarr;</th><th>AC &darr;</th><th>CR</th><th>Comp.</th><th>Pred.</th></tr></thead>
-        <tbody>
-          <tr><td>Llama 3.2 1B</td><td>0.000</td><td>0.000</td><td>0.000 [0.000, 0.000]</td><td>0.000</td><td>0.000</td><td>152.11</td><td>&minus;0.001</td><td>&minus;0.11</td><td>0.01</td></tr>
-          <tr><td>Llama 3.2 3B</td><td>0.443</td><td>0.013</td><td>0.024 [0.019, 0.028]</td><td>0.018</td><td>0.012</td><td>200.00</td><td>0.008</td><td>1.05</td><td>1.05</td></tr>
-          <tr><td>Llama 3.1 8B</td><td>0.615</td><td>0.061</td><td>0.095 [0.085, 0.106]</td><td>0.070</td><td>0.049</td><td>200.00</td><td>0.030</td><td>3.67</td><td>4.08</td></tr>
-        </tbody>
-        <tbody>
-          <tr><td>Qwen 3.5 2B</td><td>0.134</td><td>0.008</td><td>0.013 [0.009, 0.018]</td><td>0.006</td><td>0.007</td><td>128.35</td><td>0.005</td><td>0.57</td><td>0.59</td></tr>
-          <tr><td>Qwen 3.5 4B</td><td>0.290</td><td>0.098</td><td>0.109 [0.097, 0.122]</td><td>0.089</td><td>0.063</td><td>185.37</td><td>0.098</td><td>11.48</td><td>11.48</td></tr>
-          <tr><td>Qwen 3.5 9B</td><td>0.357</td><td>0.074</td><td>0.101 [0.085, 0.117]</td><td>0.065</td><td>0.060</td><td>171.52</td><td>0.034</td><td>3.92</td><td>3.92</td></tr>
-          <tr><td>Qwen 3.5 27B</td><td>0.662</td><td>0.423</td><td>0.505 [0.490, 0.521]</td><td>0.515</td><td>0.358</td><td>109.59</td><td>0.222</td><td>29.31</td><td>37.90</td></tr>
-        </tbody>
-        <tbody>
-          <tr><td>Gemma 4 12B</td><td class="c-best">0.777</td><td>0.204</td><td>0.290 [0.275, 0.306]</td><td>0.266</td><td>0.159</td><td>172.23</td><td>0.103</td><td>13.02</td><td>13.15</td></tr>
-        </tbody>
-        <tbody>
-          <tr><td>GPT-5.5</td><td>0.735</td><td class="c-best">0.531</td><td class="c-best">0.587 [0.572, 0.601]</td><td class="c-best">0.605</td><td class="c-best">0.496</td><td class="c-best">78.86</td><td>0.130</td><td>16.47</td><td>41.42</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <figure class="figure-block">
-      <img class="figure-img" src="./static/images/f1_by_rho.png"
-           alt="Mean F1 by corruption rate for GPT-5.5, Qwen 3.5 27B, Gemma 4 12B and Qwen 3.5 4B.">
-      <figcaption class="caption">
-        <b>Figure 2.</b> Mean F1 by corruption rate &rho; for the four strongest curators (<i>n</i> = 30 episodes per
-        cell). Difficulty is not monotone in &rho;: GPT-5.5 improves as defects multiply, Qwen 3.5 27B stays flat, and
-        the smaller models collapse.
-      </figcaption>
-    </figure>
   </div>
 </section>
 
@@ -458,6 +371,17 @@
 </section>
 
 
+<section class="section" id="acknowledgements">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 section-title">Acknowledgements</h2>
+    <p class="has-text-justified">
+      We thank Didhiti Nahid for her helpful feedback on an earlier draft of this paper. Md. Farhan Ishraq, in
+      particular wants to thank his parents, Md. Shah Alam and Afia Khatun Mily, for everything.
+    </p>
+  </div>
+</section>
+
+
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered">
@@ -481,7 +405,20 @@
   </div>
 </footer>
 
+<dialog class="lightbox" aria-label="Enlarged figure"><img alt=""></dialog>
+
 <script>
+  const lightbox = document.querySelector('.lightbox');
+  document.querySelectorAll('.fig-zoom').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      lightbox.querySelector('img').src = a.href;
+      lightbox.querySelector('img').alt = a.querySelector('img').alt;
+      lightbox.showModal();
+    });
+  });
+  lightbox.addEventListener('click', function () { lightbox.close(); });
+
   document.querySelector('.navbar-burger').addEventListener('click', function () {
     this.classList.toggle('is-active');
     document.querySelector('.navbar-menu').classList.toggle('is-active');
