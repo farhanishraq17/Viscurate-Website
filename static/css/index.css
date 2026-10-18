@@ -81,9 +81,8 @@ section[id] {
   border-radius: 10px;
 }
 
-.figure-narrow {
-  max-width: 560px;
-  margin: 2rem auto 0;
+.figure-block {
+  margin-top: 2rem;
 }
 
 .caption {
@@ -106,6 +105,10 @@ mjx-container[display="true"] {
   font-size: 0.92rem;
   border-top: 2px solid #222;
   border-bottom: 2px solid #222;
+}
+
+.paper-table.full {
+  width: 100%;
 }
 
 .paper-table caption {
@@ -202,10 +205,7 @@ table.paper-table td {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
-  background: linear-gradient(90deg, #b8791f, #7655a7, #3d7ab8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #8b0000;
 }
 
 .stat-label {
@@ -227,10 +227,10 @@ table.paper-table td {
   min-width: 2.2rem;
   font-family: 'Castoro', serif;
   font-style: italic;
-  color: #7655a7;
+  color: #8b0000;
 }
 
-/* Findings, as cards with a gradient left border. */
+/* Findings, as cards with a dark red left border. */
 .finding-list {
   display: grid;
   gap: 0.9rem;
@@ -239,8 +239,7 @@ table.paper-table td {
 .finding-card {
   height: 100%;
   padding: 1rem 1.25rem;
-  border-left: 4px solid;
-  border-image: linear-gradient(#b8791f, #7655a7, #3d7ab8) 1;
+  border-left: 4px solid #8b0000;
   background: #fafafa;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }

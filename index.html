@@ -219,7 +219,7 @@
     </div>
     <div class="table-container">
       <table class="paper-table desc">
-        <caption><b>Table A.1.</b> Description of the action space of the curation agent.</caption>
+        <caption><b>Table 1.</b> Description of the action space of the curation agent.</caption>
         <thead><tr><th>Action</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>add</code></td><td>Add a new skill</td></tr>
@@ -294,7 +294,7 @@
     <div class="table-container">
       <table class="paper-table">
         <caption>
-          <b>Table 1.</b> The baseline ladder on the 944 designed pairs of <i>G</i><sub>0</sub> at matched operating
+          <b>Table 2.</b> The baseline ladder on the 944 designed pairs of <i>G</i><sub>0</sub> at matched operating
           points. FPR<sub>dist</sub>: false-merge rate on truly-<span class="vc">Distinct</span> pairs, in percent.
           FM<sub>hard</sub>: false merges accepted on the six engineered hard negatives.
           <span class="vc">VisCurate</span> abstains on 1.5% of decisions; no baseline abstains. The source-reading LLM
@@ -329,7 +329,7 @@
     <div class="table-container">
       <table class="paper-table">
         <caption>
-          <b>Table 2.</b> Verifier self-validation against ground-truth graphs <i>G</i><sub>&rho;</sub> (300 instances,
+          <b>Table 3.</b> Verifier self-validation against ground-truth graphs <i>G</i><sub>&rho;</sub> (300 instances,
           13,658 pairs). The binary merge decision scores recall 0.512 (exact 95% CI [0.495, 0.530]) at precision 1.000
           (tp/fp/fn = 1,696/0/1,614).
         </caption>
@@ -378,33 +378,35 @@
       </p>
     </div>
     <div class="table-container">
-      <table class="paper-table">
+      <table class="paper-table full">
         <caption>
-          <b>Table 3.</b> Performance of nine curation agents on the corrupted-library benchmark. Every cell aggregates
+          <b>Table 4.</b> Performance of nine curation agents on the corrupted-library benchmark. Every cell aggregates
           the same 300 instances, with instance-clustered bootstrap 95% CIs (2,000 resamples). &mu;P, &mu;R, &mu;F1: mean
-          per-episode precision, recall, and F1. IS: Intrinsic Score. AC: action cost.
+          per-episode precision, recall, and F1. mF1: micro F1. IS: Intrinsic Score. AC: action cost. CR: compression
+          ratio. Comp.: mean compression. Pred.: mean predicted actions. Higher CR, Comp., and Pred. are not better on
+          their own and carry no arrow, since they are only meaningful alongside precision or F1.
         </caption>
-        <thead><tr><th>Model</th><th>&mu;P &uarr;</th><th>&mu;R &uarr;</th><th>&mu;F1 &uarr; [95% CI]</th><th>IS &uarr;</th><th>AC &darr;</th></tr></thead>
+        <thead><tr><th>Model</th><th>&mu;P &uarr;</th><th>&mu;R &uarr;</th><th>&mu;F1 &uarr; [95% CI]</th><th>mF1 &uarr;</th><th>IS &uarr;</th><th>AC &darr;</th><th>CR</th><th>Comp.</th><th>Pred.</th></tr></thead>
         <tbody>
-          <tr><td>Llama 3.2 1B</td><td>0.000</td><td>0.000</td><td>0.000 [0.000, 0.000]</td><td>0.000</td><td>152.11</td></tr>
-          <tr><td>Llama 3.2 3B</td><td>0.443</td><td>0.013</td><td>0.024 [0.019, 0.028]</td><td>0.012</td><td>200.00</td></tr>
-          <tr><td>Llama 3.1 8B</td><td>0.615</td><td>0.061</td><td>0.095 [0.085, 0.106]</td><td>0.049</td><td>200.00</td></tr>
+          <tr><td>Llama 3.2 1B</td><td>0.000</td><td>0.000</td><td>0.000 [0.000, 0.000]</td><td>0.000</td><td>0.000</td><td>152.11</td><td>&minus;0.001</td><td>&minus;0.11</td><td>0.01</td></tr>
+          <tr><td>Llama 3.2 3B</td><td>0.443</td><td>0.013</td><td>0.024 [0.019, 0.028]</td><td>0.018</td><td>0.012</td><td>200.00</td><td>0.008</td><td>1.05</td><td>1.05</td></tr>
+          <tr><td>Llama 3.1 8B</td><td>0.615</td><td>0.061</td><td>0.095 [0.085, 0.106]</td><td>0.070</td><td>0.049</td><td>200.00</td><td>0.030</td><td>3.67</td><td>4.08</td></tr>
         </tbody>
         <tbody>
-          <tr><td>Qwen 3.5 2B</td><td>0.134</td><td>0.008</td><td>0.013 [0.009, 0.018]</td><td>0.007</td><td>128.35</td></tr>
-          <tr><td>Qwen 3.5 4B</td><td>0.290</td><td>0.098</td><td>0.109 [0.097, 0.122]</td><td>0.063</td><td>185.37</td></tr>
-          <tr><td>Qwen 3.5 9B</td><td>0.357</td><td>0.074</td><td>0.101 [0.085, 0.117]</td><td>0.060</td><td>171.52</td></tr>
-          <tr><td>Qwen 3.5 27B</td><td>0.662</td><td>0.423</td><td>0.505 [0.490, 0.521]</td><td>0.358</td><td>109.59</td></tr>
+          <tr><td>Qwen 3.5 2B</td><td>0.134</td><td>0.008</td><td>0.013 [0.009, 0.018]</td><td>0.006</td><td>0.007</td><td>128.35</td><td>0.005</td><td>0.57</td><td>0.59</td></tr>
+          <tr><td>Qwen 3.5 4B</td><td>0.290</td><td>0.098</td><td>0.109 [0.097, 0.122]</td><td>0.089</td><td>0.063</td><td>185.37</td><td>0.098</td><td>11.48</td><td>11.48</td></tr>
+          <tr><td>Qwen 3.5 9B</td><td>0.357</td><td>0.074</td><td>0.101 [0.085, 0.117]</td><td>0.065</td><td>0.060</td><td>171.52</td><td>0.034</td><td>3.92</td><td>3.92</td></tr>
+          <tr><td>Qwen 3.5 27B</td><td>0.662</td><td>0.423</td><td>0.505 [0.490, 0.521]</td><td>0.515</td><td>0.358</td><td>109.59</td><td>0.222</td><td>29.31</td><td>37.90</td></tr>
         </tbody>
         <tbody>
-          <tr><td>Gemma 4 12B</td><td class="c-best">0.777</td><td>0.204</td><td>0.290 [0.275, 0.306]</td><td>0.159</td><td>172.23</td></tr>
+          <tr><td>Gemma 4 12B</td><td class="c-best">0.777</td><td>0.204</td><td>0.290 [0.275, 0.306]</td><td>0.266</td><td>0.159</td><td>172.23</td><td>0.103</td><td>13.02</td><td>13.15</td></tr>
         </tbody>
         <tbody>
-          <tr><td>GPT-5.5</td><td>0.735</td><td class="c-best">0.531</td><td class="c-best">0.587 [0.572, 0.601]</td><td class="c-best">0.496</td><td class="c-best">78.86</td></tr>
+          <tr><td>GPT-5.5</td><td>0.735</td><td class="c-best">0.531</td><td class="c-best">0.587 [0.572, 0.601]</td><td class="c-best">0.605</td><td class="c-best">0.496</td><td class="c-best">78.86</td><td>0.130</td><td>16.47</td><td>41.42</td></tr>
         </tbody>
       </table>
     </div>
-    <figure class="figure-narrow">
+    <figure class="figure-block">
       <img class="figure-img" src="./static/images/f1_by_rho.png"
            alt="Mean F1 by corruption rate for GPT-5.5, Qwen 3.5 27B, Gemma 4 12B and Qwen 3.5 4B.">
       <figcaption class="caption">
