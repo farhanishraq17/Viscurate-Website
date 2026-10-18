@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="VisCurate decides whether two image operators are the same by running them, not by reading their names and descriptions.">
+  <meta name="keywords" content="VisCurate, skill libraries, equivalence verification, curation, computer vision, WACV">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VisCurate: Evaluating Behavioral Equivalence of Visual Skills</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://github.com/farhanishraq17/VisCurate-" aria-label="Code">
+        <span class="icon"><i class="fab fa-github"></i></span>
+      </a>
+      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#method">Method</a>
+      <a class="navbar-item" href="#benchmark">Benchmark</a>
+      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#limitations">Limitations</a>
+      <a class="navbar-item" href="#BibTeX">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title"><span class="vc">VisCurate</span>: Evaluating Behavioral Equivalence of Visual Skills</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Md Farhan Ishraq<sup>1</sup>,</span>
+            <span class="author-block">Md Farhan Ishmam<sup>2</sup>,</span>
+            <span class="author-block">Reaz Hassan Joarder<sup>1</sup>,</span>
+            <span class="author-block">Md Hasanul Kabir<sup>1</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Islamic University of Technology,</span>
+            <span class="author-block"><sup>2</sup>University of Utah</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block publication-venue">Manuscript under review &middot; WACV 2027 (Round 2)</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://github.com/farhanishraq17/VisCurate-"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/farhanishraq17/VisCurate-/blob/main/docs/reports/findings.md"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-chart-bar"></i></span>
+                  <span>Findings</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/farhanishraq17/VisCurate-/tree/main/data/probe_images_full"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="far fa-images"></i></span>
+                  <span>Probe Battery</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#BibTeX" class="button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-quote-right"></i></span>
+                  <span>BibTeX</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container">
+    <div class="hero-body">
+      <img class="figure-img" src="./static/images/teaser.png"
+           alt="Gaussian and box blur have near-identical descriptions and the name-match baseline would merge them, but their outputs diverge increasingly with kernel size.">
+      <h2 class="subtitle has-text-centered">
+        Similar text does not mean the same behaviour. <span class="vc">VisCurate</span> decides whether two
+        image operators are the same by <b>running them</b>, not by reading their names and descriptions.
+      </h2>
+      <p class="caption">
+        <b>Figure 1.</b> <code>blur_gaussian_v1</code> and <code>blur_box_v1</code> have near-identical descriptions,
+        and the name-match baseline scores the pair exactly at its merge threshold (0.50 &ge; &tau; = 0.50).
+        Running both skills over the matched kernel-size sweep tells a different story: the worst-case per-probe
+        L&infin; is 0.181 at <i>k</i> = 3 and 0.376 at <i>k</i> = 21, i.e. <b>46&ndash;96&times; the EXACT tolerance</b>
+        &epsilon; = 1/255. <i>Left:</i> outputs and |&Delta;| maps on the worst-case probe at <i>k</i> = 21.
+        <i>Right:</i> L&infin; across 130 hash-verified synthetic probes of the 177-probe battery.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <nav class="level stats">
+        <div class="level-item has-text-centered">
+          <div><p class="heading">False merges</p><p class="title">0</p><p>in 13,658 labelled pairs</p></div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div><p class="heading">Merge recall</p><p class="title">0.512</p><p>across 300 corrupted libraries</p></div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div><p class="heading">Text baselines</p><p class="title">5 / 6</p><p>hard negatives falsely merged</p></div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div><p class="heading">Real fork</p><p class="title">23 / 25</p><p>shared filters byte-identical</p></div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div><p class="heading">Screening cost</p><p class="title">|C| &prop; n<sup>1.13</sup></p><p>instead of quadratic</p></div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="abstract">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Modern vision-based agents have shifted toward skill-based problem-solving, where a skill is an executable
+            image-to-image operation, e.g., cropping, thresholding, or edge detection. As these skill libraries grow, they
+            accumulate duplicated, mislabeled, and defective skills. The signals normally used to curate them (a skill's
+            name, description, or source code) say little about how the skill visually changes the image. We present
+            <b><span class="vc">VisCurate</span></b>, a framework and benchmark that curates visual skill libraries from
+            observed execution rather than from text. <span class="vc">VisCurate</span> runs each candidate skill pair on a
+            shared probe battery and assigns one of six behavioral relations, each tied to a library edit that is safe to
+            make. The benchmark injects seven defect types into a clean library at controlled rates, producing 300
+            reproducible instances with ground-truth relations and repairs. While text baselines accept up to five of six
+            false merges on hard negatives, our verifier accepts none and recovers 51.2% of the pairs that are truly
+            mergeable. On two real, uncurated libraries, <span class="vc">VisCurate</span> finds that 92% of the skills a
+            package shares with its downstream copy are redundant, while execution confirms only 10 of 17 published
+            equivalence claims. The curation problem also remains open, as the strongest of the nine automated curators
+            recovers only about half of the repairs. We emphasize that visual skill libraries should be curated by
+            behavior, not by description.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="introduction">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Why Output Grounding?</h2>
+    <div class="content has-text-justified">
+      <p>
+        Agentic vision systems increasingly assemble behaviour from <b>skills</b>: small, reusable operators such
+        as <i>blur</i>, <i>resize</i> or <i>threshold</i>. Skill libraries grow by accretion (agent-authored
+        additions, forks, independent re-implementations) and without curation they fill up with redundant and
+        subtly wrong entries. The cheap way to deduplicate is to compare what the skills <i>say</i>. That is unsafe
+        for two reasons:
+      </p>
+      <ul>
+        <li><b>Similar text is not enough to justify a merge.</b> <code>blur_gaussian</code> and <code>blur_box</code>
+          both "convolve with a kernel". They agree closely at small kernel sizes and diverge at large ones (Figure 1).</li>
+        <li><b>Similar text is not required for a real duplicate either.</b> Two operators with unrelated names can
+          compute the same function, and a text judge will never propose that merge.</li>
+      </ul>
+      <p>
+        The costly error is a <b>false merge</b>, because it silently deletes a capability that clients depend on.
+        <span class="vc">VisCurate</span> therefore makes <i>precision on non-equivalence</i> the primary objective
+        and treats library compression as secondary.
+      </p>
+      <h3 class="title is-4">Contributions</h3>
+      <ol>
+        <li><b>A text-blind, output-grounded verifier</b> with a six-relation taxonomy and an abstention class,
+          worst-case aggregation over matched parameter sweeps, a directional subsumption search, and a commutation
+          test for complementary operators. The modality boundary is enforced <b>by type</b>: the verifier receives
+          a <code>ComparatorView</code>, which has no <code>description</code> attribute.</li>
+        <li><b>A verifier-gated curation environment</b> with an eight-action API. Structural edits
+          (<code>merge</code>, <code>parameterize</code>, <code>split</code>) need a certifying relation, and every
+          rejection returns structured evidence.</li>
+        <li><b>A controlled benchmark:</b> a clean 100-skill library <i>L</i><sub>0</sub>, a designed relation graph
+          <i>G</i><sub>0</sub>, a 177-probe license-clean battery with a frozen reference oracle, and a replayable
+          corruption generator (7 defect types, 300 corrupted libraries).</li>
+        <li><b>An empirical study across the full stack:</b> an eight-rung text/code baseline ladder, self-validation
+          on 300 corrupted libraries, two real uncurated libraries, nine LLM curation agents, probe ablations,
+          out-of-distribution robustness, neural/stochastic operators, and a cost/scalability analysis.</li>
+        <li><b>A research harness designed against fabricated results:</b> deterministic execution given the seed,
+          calibrated thresholds with provenance, manifest-backed artifacts, and report generators that mark missing
+          runs as <i>pending</i>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="method">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Method</h2>
+
+    <h3 class="title is-4">Problem formulation</h3>
+    <div class="content has-text-justified">
+      <p>A <b>skill</b> is a function that is deterministic once its seed is fixed:</p>
+      \[ f : \mathcal{X} \times \Theta_f \times \mathbb{N} \rightarrow \mathcal{X}, \qquad y = f(x;\, \theta,\, s) \]
+      <p>
+        Given a probe battery \(P\) and a canonicalization map \(\phi\), the verifier assigns every ordered pair
+        \((A, B)\) exactly one relation from
+        {EXACT, PERCEPTUAL, SUBSUMPTION, SEMANTIC, COMPLEMENTARY, DISTINCT} &cup; {UNCERTAIN}.
+        Text judges and the output verifier are all compared on one binary decision, <b>mergeability</b>:
+      </p>
+      \[ \mathrm{merge}(A,B) = \mathbf{1}\big[\, R(A,B) \in \{\mathsf{EXACT},\ \mathsf{PERCEPTUAL}\} \,\big] \]
+      <p>The verifier states <b>facts about outputs</b>; the curation agent makes <b>repository decisions</b>.</p>
+    </div>
+
+    <h3 class="title is-4">System overview</h3>
+    <div class="content">
+      <img class="figure-img" src="./static/images/overview.png"
+           alt="Overview of the VisCurate pipeline: (a) pairwise verification on shared probes assigns a behavioral relation; (b) an LLM curator proposes edits that are verified before the library is updated.">
+      <p class="caption">
+        <b>Figure 2. Overview of the <span class="vc">VisCurate</span> pipeline.</b> (a) A noisy seed skill library is
+        evaluated through an output-grounded equivalence verifier, which executes candidate skills on shared probes and
+        certifies their behavioral relations from the resulting outputs. (b) These verified relations guide the
+        structural edits proposed by the curation agent, which are validated before updating the library. The process
+        repeats until a compact and organized skill library is produced.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Output canonicalization</h3>
+    <div class="content has-text-justified">
+      <p>
+        Skills return heterogeneous outputs (grayscale, RGBA, binary masks, edge maps, resized canvases). Before
+        any comparison, outputs pass through a versioned contract (<code>CANON_VERSION = 1.0.0</code>):
+      </p>
+    </div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Aspect</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>dtype and range</td><td><code>float32 &isin; [0, 1]</code> for metrics; a <code>uint8</code> view is kept for hashing</td></tr>
+          <tr><td>channels</td><td>1-channel outputs are replicated to 3; RGBA is composited over a fixed mid-grey with alpha tracked separately</td></tr>
+          <tr><td>shape</td><td>identical shape is a precondition for EXACT/PERCEPTUAL, so L&infin; = &infin; on mismatch</td></tr>
+          <tr><td>binary masks</td><td>detected and compared by exact match and IoU, not by LPIPS</td></tr>
+          <tr><td>hashing</td><td>SHA-256 over the <code>uint8</code> view, shape, mask flag, alpha and contract version</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-4">A six-relation taxonomy</h3>
+    <div class="content"><p>Each relation, the evidence that certifies it, and the action it licenses. Only the first two rows license a merge.</p></div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Relation</th><th>Certified when (from outputs only)</th><th>Aggregation</th><th>Licensed action</th></tr></thead>
+        <tbody>
+          <tr><td><b>EXACT</b></td><td>all canonical hashes are equal, or worst-case L&infin; &le; &epsilon;</td><td>max over sweep &times; probes</td><td>merge</td></tr>
+          <tr><td><b>PERCEPTUAL</b></td><td>worst-case LPIPS &le; &tau;<sub>perc</sub>(1&minus;&delta;) <b>and</b> worst-case (1&minus;SSIM) &le; &tau;<sub>ssim</sub></td><td>max</td><td>merge</td></tr>
+          <tr><td><b>SUBSUMPTION</b> (A &#8849; B)</td><td>every binding of A is reproduced by some binding of B, but not the reverse</td><td>&forall;&exist; grid search</td><td>parameterize (fold A into B)</td></tr>
+          <tr><td><b>SEMANTIC_PRESERVING</b></td><td>DINO (or CLIP) cosine distance with p90 &le; &tau;<sub>sem</sub>(1&minus;&delta;) and mean &le; &tau;<sub>sem</sub></td><td>p90 + mean</td><td>parameterize, or keep both (<b>never</b> merge)</td></tr>
+          <tr><td><b>COMPLEMENTARY</b></td><td>both skills change the image, and A&#8728;B &asymp; B&#8728;A within tolerance</td><td>worst case</td><td>keep both</td></tr>
+          <tr><td><b>DISTINCT</b></td><td>none of the above (residual class)</td><td>&mdash;</td><td>keep separate</td></tr>
+          <tr><td><b>UNCERTAIN</b></td><td>the deciding distance falls inside the band [&tau;(1&minus;&delta;), &tau;(1+&delta;)]</td><td>&mdash;</td><td>route to human review</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-4">Hierarchical, text-blind verification</h3>
+    <div class="content has-text-justified">
+      <p>
+        The classifier checks relations from cheapest and strictest to most expensive, and stops at the first
+        relation that holds. The two merge-licensing relations must hold <b>on every probe</b>, so they use the
+        worst case over the matched sweep \(\mathcal{S}_{AB}\) and the probes \(P_{AB}\) on which both skills
+        produced an output:
+      </p>
+      \[ d_m^{\max}(A,B) = \max_{(\theta_A,\theta_B) \in \mathcal{S}_{AB}} \; \max_{p \in P_{AB}} \; d_m\!\left(\phi\big(f_A(p;\theta_A,s)\big),\, \phi\big(f_B(p;\theta_B,s)\big)\right) \]
+      <p>
+        If \(P_{AB}\) is empty, \(d^{\max}\) is set to \(+\infty\), so a pair with no comparable evidence can never be
+        certified. SEMANTIC_PRESERVING describes a distribution of distances and takes the more conservative of the
+        two semantic backends:
+      </p>
+      \[ D_{AB} = \Big\{ \max\big(d_{\mathrm{DINO}}(p),\, d_{\mathrm{CLIP}}(p)\big) \Big\}_{p}, \qquad
+         \mathsf{SEM} \iff Q_{0.9}(D_{AB}) \le \tau_{\mathrm{sem}}(1-\delta) \;\wedge\; \overline{D_{AB}} \le \tau_{\mathrm{sem}} \]
+      <p>
+        When two skills do not share a declared sweep axis, a directional grid search decides subsumption. If each
+        skill reproduces the other, the result is EXACT/PERCEPTUAL instead. This is why
+        <code>crop_center_percentage</code> is correctly labelled a <i>special case</i> of
+        <code>crop_bounding_box</code> rather than a duplicate.
+      </p>
+      \[ A \sqsubseteq B \iff \forall\, \theta_A \in \mathcal{G}_A \; \exists\, \theta_B \in \mathcal{G}_B :\; f_A(\cdot\,;\theta_A) \approx f_B(\cdot\,;\theta_B) \text{ on } P, \;\text{ and not } B \sqsubseteq A \]
+      <pre class="mermaid">
+flowchart TD
+    IN["Candidate pair (A, B)<br/>two ComparatorViews + an OutputProvider<br/>no description attribute exists"] --> Q{"Shared matched-sweep axis,<br/>or both parameter-free?"}
+    Q -->|yes| EX{"All hashes equal, or<br/>worst-case L∞ ≤ ε?"}
+    EX -->|yes| R_EX["EXACT → merge"]
+    EX -->|no| PE{"Worst-case LPIPS ≤ τ(1−δ)<br/>and 1−SSIM ≤ τ_ssim?"}
+    PE -->|yes| R_PE["PERCEPTUAL → merge"]
+    PE -->|"LPIPS inside the band"| R_UN["UNCERTAIN → human review"]
+    PE -->|no| SEM
+    Q -->|no| GS{"Directional grid search<br/>over both parameter grids"}
+    GS -->|"mutual reproduction"| R_EQ["EXACT / PERCEPTUAL → merge"]
+    GS -->|"one direction only"| R_SU["SUBSUMPTION A ⊑ B → parameterize"]
+    GS -->|neither| SEM
+    SEM{"DINO / CLIP distance:<br/>p90 ≤ τ_sem(1−δ) and mean ≤ τ_sem?"}
+    SEM -->|yes| R_SE["SEMANTIC_PRESERVING → parameterize or keep"]
+    SEM -->|"p90 inside the band"| R_UN
+    SEM -->|no| CO{"Both non-trivial<br/>and A∘B ≈ B∘A?"}
+    CO -->|yes| R_CO["COMPLEMENTARY → keep both"]
+    CO -->|no| R_DI["DISTINCT → reject merge"]
+      </pre>
+      <p class="caption">
+        <b>Figure 3. The stop-at-first classifier.</b> Subsumption is checked <i>before</i> the semantic stage so
+        that a loose semantic match cannot hide a directional special-case relation. Every verdict carries its
+        deciding distances and the worst-case probe.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Calibration and abstention</h3>
+    <div class="content has-text-justified">
+      <p>
+        Thresholds are <b>calibrated, never hand-tuned on test data.</b> Each &tau; is set to the most permissive
+        value that keeps <b>precision on non-equivalence &ge; 0.99</b>, subject to a recall floor of 0.5, on a
+        <b>cluster-disjoint split</b>: each operator family goes wholly into calibration or wholly into test. The band
+        half-width &delta; is the smallest value that lifts precision outside the band to target. The perceptual
+        backbone is LPIPS (AlexNet); the semantic backbones are DINO ViT-B/16 and CLIP ViT-B/32.
+      </p>
+    </div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Symbol</th><th>Config key</th><th>Value</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>&epsilon;</td><td><code>exact_epsilon</code></td><td>1/255 &asymp; 0.0039</td><td>rounding tolerance for EXACT</td></tr>
+          <tr><td>&tau;<sub>perc</sub></td><td><code>perceptual_lpips</code></td><td>0.05</td><td>worst-case LPIPS bound</td></tr>
+          <tr><td>&tau;<sub>ssim</sub></td><td><code>perceptual_ssim</code></td><td>0.10</td><td>1&minus;SSIM floor, catches cases LPIPS misses</td></tr>
+          <tr><td>&tau;<sub>sem</sub></td><td><code>semantic_dino</code></td><td>0.15</td><td>p90 semantic distance bound</td></tr>
+          <tr><td>q</td><td><code>semantic_quantile</code></td><td>0.90</td><td>aggregation quantile for the semantic stage</td></tr>
+          <tr><td>&tau;<sub>comm</sub></td><td><code>complementary_lpips</code></td><td>0.05</td><td>commutation tolerance</td></tr>
+          <tr><td>&delta;</td><td><code>abstention_delta</code></td><td>0.05 (calibrated run)</td><td>band half-width</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-4">Output-based candidate screening</h3>
+    <div class="content has-text-justified">
+      <p>
+        Verifying all O(n&sup2;) pairs is expensive, and filtering candidates by description similarity would
+        reintroduce the very bias under study. Instead, each skill gets an <b>output fingerprint</b> on a 12-probe
+        screening sub-battery (average-hash bits plus a mean DINO feature). For each skill the screen proposes the
+        <i>k</i> nearest neighbours within fingerprint distance <i>r</i>, and always adds every same-family pair and
+        every engineered hard negative. Because fingerprints come from outputs, two skills with unrelated
+        descriptions but the same behaviour still end up as candidates.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Verifier-gated curation</h3>
+    <div class="content has-text-justified">
+      <p>
+        The agent sees a <code>CurationState</code> (skill summaries with internal defect labels removed, usage
+        statistics, action history) and proposes one of eight actions (<code>add</code>, <code>remove</code>,
+        <code>modify</code>, <code>retrieve</code>, <code>merge</code>, <code>split</code>, <code>parameterize</code>,
+        <code>end</code>) within a budget of 200 actions per episode. The gate grants <b>permission</b>; whether an
+        edit is <b>desirable</b> remains the agent's decision.
+      </p>
+    </div>
+    <div class="columns">
+      <div class="column is-5">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-narrow">
+            <thead><tr><th>Verifier relation</th><th>Edit permitted</th></tr></thead>
+            <tbody>
+              <tr><td>EXACT &middot; PERCEPTUAL</td><td><code>merge</code></td></tr>
+              <tr><td>SUBSUMPTION</td><td><code>parameterize</code> (fold the specialization into the generalizer)</td></tr>
+              <tr><td>SEMANTIC_PRESERVING</td><td><code>parameterize</code> / unify, or keep both</td></tr>
+              <tr><td>COMPLEMENTARY &middot; DISTINCT</td><td>none (keep separate)</td></tr>
+              <tr><td>UNCERTAIN</td><td>none (human review)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="column content">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as Curation agent (LLM)
+    participant E as CurationEnvironment
+    participant V as Verifier (text-blind)
+    participant L as Library L_ρ
+    A->>E: merge(primary, secondary)
+    E->>V: classify(view_primary, view_secondary)
+    V-->>E: relation, distances, worst_probe
+    alt the relation licenses the edit
+        E->>L: apply the edit
+        E-->>A: APPLIED
+    else no certifying relation
+        E-->>A: REJECTED + evidence
+    end
+        </pre>
+        <p class="caption"><b>Figure 4. The curation loop.</b> Agents are pluggable: scripted, any OpenAI-compatible endpoint (including local vLLM), Ollama, or the Anthropic API.</p>
+      </div>
+    </div>
+
+    <h3 class="title is-4">Neural and stochastic skills</h3>
+    <div class="content has-text-justified">
+      <p>
+        Operators such as SAM 2.1 or Depth Anything V2 have no shared seed space, so their outputs cannot be compared
+        point by point. For these, <span class="vc">VisCurate</span> replaces the point distance with a
+        <b>per-probe two-sample test</b>: the unbiased MMD&sup2; between <i>K</i> = 16 stochastic draws of each skill,
+        with a Gaussian kernel whose bandwidth is set by the median heuristic.
+      </p>
+      \[ \widehat{\mathrm{MMD}}{}^2_u(p) = \frac{1}{K(K-1)}\sum_{i\neq j} k(a_i,a_j) + \frac{1}{K(K-1)}\sum_{i\neq j} k(b_i,b_j) - \frac{2}{K^2}\sum_{i,j} k(a_i,b_j), \qquad a_i \sim A(p),\; b_j \sim B(p) \]
+      <p>
+        The null comes from 2,000 within-probe permutations; a probe rejects equivalence when
+        \(p \le \alpha/|P|\) (Bonferroni, \(\alpha = 0.05\)), and one rejecting probe refutes equivalence, the same
+        worst-case rule as the deterministic path. Every non-rejection is reported next to the skill's own
+        self-variance baseline.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="benchmark">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Benchmark</h2>
+    <div class="content has-text-justified">
+      <p>
+        The benchmark is a <i>family</i> of datasets indexed by (&rho;, composition, seed, mode), not a single static
+        file. Every label is fixed before any metric runs.
+      </p>
+      <pre class="mermaid wide">
+flowchart LR
+    A["Layer A · audited primitive operations<br/>NumPy · OpenCV · Pillow"] --> B["Layer B · clean library L0, 100 skills<br/>→ designed relation graph G0"]
+    C["Layer C · probe battery P, 177 probes<br/>→ frozen reference oracle"]
+    B --> D["Layer D · corrupted libraries L_ρ<br/>→ G_ρ, corruption log, ideal-action key"]
+    C --> D
+    D --> E["Layer E · task and usage layer<br/>held-out queries, predicates, Zipfian usage"]
+      </pre>
+      <p class="caption"><b>Figure 5. Five-layer dataset construction.</b></p>
+    </div>
+
+    <h3 class="title is-4">Clean library <i>L</i><sub>0</sub></h3>
+    <div class="content"><p>Every skill is <code>fn(image, params, seed) &rarr; image</code> with a typed parameter schema and a stable <code>*_v1</code> id. <i>L</i><sub>0</sub> is defect-free; defects are injected only by the corruption generator.</p></div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Family</th><th>#</th><th>Representative skills</th></tr></thead>
+        <tbody>
+          <tr><td>Geometric / canvas</td><td>25</td><td>flips; rotations; shear; scale; crops; nearest/bilinear/bicubic resize; pad (reflect/replicate/constant); tiling</td></tr>
+          <tr><td>Colour / exposure / contrast</td><td>25</td><td>BT.601/BT.709 grayscale; gamma; exposure stops; saturation; hue; posterize; quantize; levels; global and CLAHE equalization</td></tr>
+          <tr><td>Signal / blur / edges / morphology</td><td>25</td><td>Gaussian/box/median/bilateral/motion blur; unsharp mask; Sobel/Scharr/Prewitt/Laplacian/Canny edges; FFT filters; morphology; NL-means denoising</td></tr>
+          <tr><td>Masks / reconstruction / synthesis</td><td>25</td><td>Telea and Navier&ndash;Stokes inpainting; flood fill; contours; distance transform; Otsu/adaptive thresholding; k-means palette; dithering; halftone</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-4">Probe battery and reference oracle</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Source</th><th>Domains</th><th>Probes</th><th>License</th></tr></thead>
+        <tbody>
+          <tr><td>Self-generated synthetics</td><td>texture 30 &middot; gradient 25 &middot; shape 25 &middot; document 25 &middot; noise 15 &middot; colour chart 10 &middot; degenerate 7</td><td>137</td><td>CC0 1.0</td></tr>
+          <tr><td>COCO test2017</td><td>natural photographs</td><td>40</td><td>CC BY 2.0 (38) &middot; no known copyright restrictions (2)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content">
+      <ul>
+        <li><b>Channel formats:</b> RGB 73 &middot; RGBA 26 &middot; grayscale 26 &middot; 16-bit grayscale 26 &middot; palette 26.</li>
+        <li><b>Degenerate cases:</b> all-black, all-white, single colour, 1&times;1, 1&times;N, N&times;1, and 1024&sup2; high-resolution.</li>
+        <li><b>Reference oracle:</b> all 100 &times; 177 = 17,700 outputs are frozen with a determinism self-audit. It confirms injected defects took effect and scores agents, but is <b>never</b> used to assign relation labels.</li>
+      </ul>
+    </div>
+
+    <h3 class="title is-4">Designed relation graph <i>G</i><sub>0</sub></h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Relation</th><th>Pairs</th><th>Designed examples</th></tr></thead>
+        <tbody>
+          <tr><td>SUBSUMPTION</td><td>7</td><td><code>rotate_{90,180,270,45}</code> &#8849; <code>rotate_canvas_degrees</code>; <code>crop_center_percentage</code> &#8849; <code>crop_bounding_box</code>; <code>linear_contrast_stretch</code> &#8849; <code>contrast_stretching_percentile</code>, <code>levels_adjust</code></td></tr>
+          <tr><td>SEMANTIC_PRESERVING</td><td>10</td><td>BT.601 &harr; BT.709 grayscale; Sobel/Scharr/Prewitt/Canny/Laplacian edges; gamma &harr; exposure stops; global &harr; CLAHE equalization; Telea &harr; Navier&ndash;Stokes inpainting; Otsu &harr; adaptive-mean thresholding</td></tr>
+          <tr><td>COMPLEMENTARY</td><td>1</td><td>dilate &harr; erode</td></tr>
+          <tr><td>DISTINCT (hard negatives)</td><td>6</td><td>Gaussian &harr; box blur; nearest/bilinear/bicubic resize (3 pairs); reflect &harr; replicate padding; posterize &harr; uniform quantize</td></tr>
+          <tr><td>EXACT / PERCEPTUAL</td><td>0</td><td>empty in <i>L</i><sub>0</sub> by design; duplicates are injected by the corruption generator</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content"><p>Every unlisted pair defaults to DISTINCT: the benchmark scores <b>944</b> candidate pairs, of which <b>926</b> are DISTINCT. An expanded key grows the hard-negative slice to <b>69</b> pairs, chosen from operator definitions alone.</p></div>
+
+    <h3 class="title is-4">Corruption generator</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>#</th><th>Defect</th><th>Mechanism</th><th>Visible to the verifier?</th><th>Ideal repair</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Implementation bug</td><td>mutate <code>fn</code> (off-by-one kernel, wrong axis, sign swap)</td><td>yes</td><td><code>remove</code></td></tr>
+          <tr><td>2</td><td>Metadata mislead</td><td>rewrite name and description; outputs unchanged</td><td><b>no</b></td><td><code>modify</code></td></tr>
+          <tr><td>3</td><td>Duplicate</td><td>clone as EXACT or PERCEPTUAL under a new id</td><td>yes</td><td><code>merge</code></td></tr>
+          <tr><td>4</td><td>Subsumption</td><td>add a baked-in specialization</td><td>yes (directional)</td><td><code>parameterize</code></td></tr>
+          <tr><td>5</td><td>Parameter-schema bug</td><td>corrupt a default value; <code>fn</code> unchanged</td><td>partial</td><td><code>modify</code></td></tr>
+          <tr><td>6</td><td>Domain-scoped bug</td><td>correct on RGB, broken on RGBA or grayscale</td><td>if the battery covers that domain</td><td><code>modify</code></td></tr>
+          <tr><td>7</td><td>Dead skill</td><td>add a correct skill that no query needs</td><td><b>no</b> (a usage question)</td><td><code>remove</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        Types 2 and 7 are invisible to output comparison <b>by design</b>; they are why the verifier and the agent are
+        separate roles. The corruption log is the canonical artifact (<i>L</i><sub>&rho;</sub> is a pure function of
+        (<i>L</i><sub>0</sub>, log)), and the grid yields 300 libraries:
+      </p>
+      <pre>&rho; &isin; {0.1, 0.2, &hellip;, 1.0}  &times;  {uniform, duplicate_heavy, metadata_heavy}  &times;  5 seeds  &times;  {single, mixed}  =  300 libraries</pre>
+    </div>
+
+    <h3 class="title is-4">Real-world corpora</h3>
+    <div class="content">
+      <ul>
+        <li><b>Fork pair.</b> <code>pilgram</code> 2.0.0 and <code>pilgram2</code> 2.0.10: 25 shared filters, 14 added by the fork, and no tooling in either library that detects the overlap.</li>
+        <li><b>Corpus A: cross-library functional cores.</b> 93 implementations across 20 operation families from OpenCV, Pillow, SciPy, scikit-image, torchvision, Albumentations and Kornia, giving 182 within-family pairs. The pair list comes from published mapping tables; parameter alignments were frozen before anything was executed.</li>
+        <li><b>Corpus B: ComfyUI node packs.</b> Specified in full but <b>blocked</b>: executing untrusted packs requires disposable-VM containment.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="results">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Results</h2>
+    <div class="content has-text-justified">
+      <p>
+        Rates are reported with raw counts and exact 95% intervals; uncertainty is clustered by corruption instance,
+        never by pair. Thresholds are the calibrated operating point and were <b>never re-fit</b> on evaluation data.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Text and code baselines</h3>
+    <div class="content"><p>Eight judges on the same 944-pair <i>G</i><sub>0</sub> benchmark at fixed operating points. A false merge is a merge of a pair whose true relation does not license one.</p></div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow is-hoverable">
+        <thead><tr><th>Rung</th><th>Judge</th><th>Reads</th><th>FDR on merges &darr;</th><th>False-merge rate on DISTINCT &darr;</th><th>Hard negatives merged &darr;</th><th>Abstentions</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>name match</td><td>name, id</td><td>1.0000</td><td>0.0540</td><td><b>5/6</b></td><td>0</td></tr>
+          <tr><td>2</td><td>TF-IDF cosine</td><td>description</td><td>1.0000</td><td>0.0021</td><td>0/6</td><td>0</td></tr>
+          <tr><td>3</td><td>sentence embedding</td><td>description</td><td>1.0000</td><td>0.0561</td><td><b>5/6</b></td><td>0</td></tr>
+          <tr><td>4</td><td>code embedding</td><td>source (no docstrings)</td><td>1.0000</td><td>0.0180</td><td><b>4/6</b></td><td>0</td></tr>
+          <tr><td>5a</td><td>AST clone, structure only</td><td>source</td><td>&mdash;</td><td>0.0000</td><td>0/6</td><td>0</td></tr>
+          <tr><td>5b</td><td>AST clone, semantics-preserving</td><td>source</td><td>&mdash;</td><td>0.0000</td><td>0/6</td><td>0</td></tr>
+          <tr><td>6</td><td>LLM on descriptions</td><td>description</td><td>1.0000</td><td>0.0011</td><td>1/6</td><td>0</td></tr>
+          <tr><td>7</td><td>LLM on source</td><td>source</td><td>&mdash;</td><td>&mdash;</td><td>mean 0</td><td>0</td></tr>
+          <tr class="ours"><td>8</td><td>output-grounded (ours)</td><td>outputs only</td><td>&mdash;</td><td>0.0000</td><td>0/6</td><td>14 (1.5%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        The name-match and sentence-embedding judges each merge 5 of the 6 engineered hard negatives; the
+        output-grounded verifier merges none. The LLM result depends on the judge model, so the strongest claim is
+        about the <i>taxonomy</i>, not any single safety number.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Verifier self-validation on 300 corrupted libraries</h3>
+    <div class="columns">
+      <div class="column">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-narrow">
+            <tbody>
+              <tr><td>Pairs scored / errors</td><td><b>13,658</b> / 0</td></tr>
+              <tr><td>Mergeable support (EXACT &cup; PERCEPTUAL)</td><td>3,310</td></tr>
+              <tr><td><b>Merge recall</b></td><td><b>0.5124</b> [0.4952, 0.5295]</td></tr>
+              <tr><td>Precision &middot; F1</td><td>1.0000 &middot; 0.6776</td></tr>
+              <tr><td><b>False-discovery rate on merges</b></td><td><b>0.0000</b></td></tr>
+              <tr><td>TP / FP / FN / TN</td><td>1,696 / <b>0</b> / 1,614 / 10,348</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="column content has-text-justified">
+        <ul>
+          <li><b>Zero false merges at all ten corruption rates.</b> Merge safety does not degrade as the library gets dirtier.</li>
+          <li><b>Almost all missed consolidation comes from one confusion:</b> 1,592 PERCEPTUAL pairs are labelled SEMANTIC_PRESERVING, accounting for &asymp; 98.8% of missed merges. Exact duplicates are found 96.8% of the time.</li>
+          <li><b>UNCERTAIN is rare but real:</b> emitted 2 times in 13,658 pairs.</li>
+        </ul>
+      </div>
+    </div>
+    <details class="content">
+      <summary>Per-relation breakdown (n = 300)</summary>
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped is-narrow">
+          <thead><tr><th>Relation</th><th>Support</th><th>Recall [95% CI]</th><th>Precision</th></tr></thead>
+          <tbody>
+            <tr><td>EXACT</td><td>1,640</td><td><b>0.9683</b> [0.959, 0.976]</td><td>1.0000</td></tr>
+            <tr><td>PERCEPTUAL</td><td>1,667</td><td>0.0438 [0.034, 0.055]</td><td>0.6952</td></tr>
+            <tr><td>SUBSUMPTION</td><td>4,672</td><td>0.7581</td><td>0.9961</td></tr>
+            <tr><td>SEMANTIC_PRESERVING</td><td>3,424</td><td>0.3186</td><td>0.2784</td></tr>
+            <tr><td>COMPLEMENTARY</td><td>310</td><td>0.0000</td><td>0.0000</td></tr>
+            <tr><td>DISTINCT</td><td>1,942</td><td>0.3836</td><td>0.1880</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <h3 class="title is-4">Hard-negative safety bound</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Slice</th><th>False merges</th><th>Exact 95% CI</th><th>One-sided 95% upper bound</th></tr></thead>
+        <tbody>
+          <tr><td>Original 6 designed pairs</td><td>0/6</td><td>[0.000, 0.459]</td><td>0.393</td></tr>
+          <tr><td><b>Expanded 69 pairs</b></td><td><b>0/69</b></td><td><b>[0.0000, 0.0521]</b></td><td><b>0.0425</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        The supported claim is that the verifier "<i>never licenses a false merge</i>", not that it keeps hard
+        negatives DISTINCT: 26 of the 69 pairs receive a non-merging relation other than DISTINCT. If adjudicators side
+        with the verifier on those, the upper bound rises to 6.7%.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Real uncurated libraries</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Corpus</th><th>Self-pair sanity check</th><th>Headline result</th></tr></thead>
+        <tbody>
+          <tr><td><b>Fork pair</b> (<code>pilgram</code> vs <code>pilgram2</code>)</td><td>50/50</td><td><b>23/25 shared filters are EXACT</b>: byte-identical on all 177 probes. The other 2 are SEMANTIC_PRESERVING and correctly <b>not</b> merged.</td></tr>
+          <tr><td><b>Corpus A</b> (182 cross-library pairs)</td><td>93/93</td><td>Of 17 pairs that published tables group as the same operation, <b>10 survive execution</b> (0.588); restricted to fully aligned pairs, 10/14 (0.714).</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        92% of a real fork's shared surface is exactly redundant, and nothing in either library notices. The
+        <code>perpetua</code> filter shows the taxonomy at work: <b>LPIPS 0.2464</b> (visibly different) but
+        <b>DINO p90 0.0008</b> (semantically indistinguishable). A perceptual-only gate would call it divergent; a
+        semantic-only gate would merge it.
+      </p>
+    </div>
+
+    <h3 class="title is-4">LLM curation agents</h3>
+    <img class="figure-img" src="./static/images/curators.png"
+         alt="Mean F1 with 95% confidence intervals for ten curation-agent runs; gpt-5.5 leads the full 300-episode grid at 0.5868.">
+    <p class="caption">
+      <b>Figure 6. Curation quality by model.</b> Mean action-level F1 with instance-clustered 95% CIs. The hollow
+      marker (gpt-5.6-luna) covers only the 41 highest-&rho; instances and is not comparable with the full-grid rows.
+    </p>
+    <br>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow is-hoverable">
+        <thead><tr><th>Model</th><th>n</th><th>Mean F1 [95% CI]</th><th>Precision</th><th>Recall</th><th>Intrinsic</th><th>Mean action cost</th></tr></thead>
+        <tbody>
+          <tr><td>gpt-5.6-luna &dagger;</td><td>41</td><td>0.6201 [0.5946, 0.6471]</td><td>0.8001</td><td>0.5165</td><td>0.5061</td><td>148.68</td></tr>
+          <tr><td><b>gpt-5.5</b></td><td>300</td><td><b>0.5868</b> [0.5719, 0.6012]</td><td>0.7346</td><td>0.5305</td><td>0.4959</td><td>78.86</td></tr>
+          <tr><td>qwen3.5-27b</td><td>300</td><td>0.5050 [0.4903, 0.5206]</td><td>0.6621</td><td>0.4233</td><td>0.3577</td><td>109.59</td></tr>
+          <tr><td>gemma4-12b</td><td>300</td><td>0.2900 [0.2754, 0.3059]</td><td>0.7768</td><td>0.2036</td><td>0.1588</td><td>172.23</td></tr>
+          <tr><td>qwen3.5-4b</td><td>300</td><td>0.1090 [0.0967, 0.1222]</td><td>0.2899</td><td>0.0977</td><td>0.0626</td><td>185.37</td></tr>
+          <tr><td>qwen3.5-9b</td><td>300</td><td>0.1010 [0.0848, 0.1174]</td><td>0.3572</td><td>0.0739</td><td>0.0601</td><td>171.52</td></tr>
+          <tr><td>llama3.1-8b</td><td>300</td><td>0.0948 [0.0847, 0.1060]</td><td>0.6150</td><td>0.0609</td><td>0.0491</td><td>200.00</td></tr>
+          <tr><td>llama3.2-3b</td><td>300</td><td>0.0237 [0.0194, 0.0284]</td><td>0.4433</td><td>0.0127</td><td>0.0119</td><td>200.00</td></tr>
+          <tr><td>qwen3.5-2b</td><td>300</td><td>0.0130 [0.0086, 0.0182]</td><td>0.1338</td><td>0.0077</td><td>0.0070</td><td>128.35</td></tr>
+          <tr><td>llama3.2-1b</td><td>300</td><td>0.0000 [0.0000, 0.0000]</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>152.11</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p class="caption">&dagger; Covers only the 41 highest-&rho; instances. The action budget is 200, so a mean cost of 200 means the model always exhausted its budget.</p>
+      <ul>
+        <li><b>Even the best model completes only about half of the required repairs</b> (gpt-5.5 recall 0.531).</li>
+        <li><b>Higher corruption rates are not uniformly harder:</b> gpt-5.5's F1 rises from 0.421 at &rho; = 0.1 to 0.630 at &rho; = 0.9, while gemma4-12b and qwen3.5-4b fall by about 0.18.</li>
+        <li><b>Small models barely act correctly:</b> every model at 9B parameters or below stays under F1 = 0.11.</li>
+      </ul>
+    </div>
+
+    <h3 class="title is-4">Neural and stochastic operators</h3>
+    <div class="content has-text-justified">
+      <p>
+        Six neural skills (SAM 2.1 large/small, Depth Anything V2 large/small, two purpose-built negatives), 16 draws
+        on each of 40 probes, 2,000 permutations per test. Sanity checks pass: <b>6/6</b> self-pairs are not
+        distinguishable and <b>2/2</b> hard negatives are.
+      </p>
+    </div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Comparison</th><th>Probe domain</th><th>Verdict</th><th>Min <i>p</i></th><th>Probes rejecting</th></tr></thead>
+        <tbody>
+          <tr><td>DAv2-Large vs DAv2-Small</td><td>full</td><td>DISTINGUISHABLE</td><td>0.0005</td><td>40/40</td></tr>
+          <tr><td>SAM2-Large vs SAM2-Small</td><td>full</td><td>DISTINGUISHABLE</td><td>0.0005</td><td>13/38</td></tr>
+          <tr><td>SAM2-Large vs SAM2-Small</td><td>applicable</td><td>not distinguishable</td><td>0.0355</td><td>0/10</td></tr>
+          <tr><td>depth vs disparity (hard negative)</td><td>full</td><td>DISTINGUISHABLE</td><td>0.0005</td><td>38/40</td></tr>
+          <tr><td>instance vs semantic masks (hard negative)</td><td>applicable</td><td>DISTINGUISHABLE</td><td>0.0010</td><td>3/10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>The two SAM 2.1 capacities can be told apart on synthetic patterns but <b>not</b> on images that contain objects, where segmentation is actually defined. This is reported against the self-variance baseline and is not a claim of equivalence.</p>
+    </div>
+
+    <h3 class="title is-4">Robustness: probe diversity and out-of-distribution inputs</h3>
+    <div class="content"><p>False merges on the 6 hard negatives by battery size |B| and probe-selection strategy. Accuracy does not change with battery size; safety depends on <b>diversity</b>, not count.</p></div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow has-text-centered">
+        <thead><tr><th class="has-text-left">Probe selection</th><th>8</th><th>16</th><th>32</th><th>64</th><th>128</th><th>177</th></tr></thead>
+        <tbody>
+          <tr><td class="has-text-left">stratified across classes</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td class="has-text-left">random</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td class="has-text-left">first N (all from one class)</td><td><b>1</b></td><td><b>1</b></td><td><b>1</b></td><td><b>1</b></td><td>0</td><td>0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        <b>Out-of-distribution certificate flips.</b> A new 31-probe battery from 6 unseen classes (extreme aspect
+        ratios, HDR, medical, satellite, saturated, tiny) re-tested 74 merges certified on real third-party libraries,
+        without re-calibration. Only <b>1</b> flipped (<code>alb.gaussian_blur</code> vs <code>cv2.GaussianBlur</code>:
+        PERCEPTUAL &rarr; SEMANTIC_PRESERVING), a flip rate of <b>0.0135</b> [0.0003, 0.0730] with a one-sided upper
+        bound of 6.3%.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Scalability and cost</h3>
+    <img class="figure-img" src="./static/images/scalability.png"
+         alt="Left: screening merge recall versus pair reduction across k. Right: candidate-set size grows as 2.379 n^1.126 against quadratic exhaustive pairing.">
+    <p class="caption">
+      <b>Figure 7. Screening is safe and near-linear.</b> <b>(a)</b> With <i>k</i> = 10 and <i>r</i> = 0.05, the screen
+      keeps every mergeable pair (recall 1.000) and still removes 95.07% of pairs; the shipped setting (<i>k</i> = 5,
+      <i>r</i> = 0.5) is dominated. <b>(b)</b> On nested subsamples, the candidate set grows as
+      |C| = 2.379&middot;n<sup>1.126</sup> (R&sup2; = 0.998), compared with n(n&minus;1)/2 for exhaustive pairing.
+    </p>
+    <br>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Measurement (262,833 telemetry events)</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Pairs decided before any learned backend runs</td><td><b>54.9%</b></td></tr>
+          <tr><td>Signature cache hit rate</td><td>78.2%</td></tr>
+          <tr><td>Pair verification time</td><td>median 401 ms &middot; p95 64.5 s</td></tr>
+          <tr><td>Output cache per skill (177 probes)</td><td>214.8 MB, extrapolating to 2.1 TB at 10<sup>4</sup> skills</td></tr>
+          <tr><td>Features-only cache (analytic estimate)</td><td>5.4 GB at 10<sup>4</sup> skills, about <b>395&times; smaller</b></td></tr>
+          <tr><td>Tokens per <i>correct</i> repair</td><td>gpt-5.5: <b>9,202</b> &middot; gpt-5.6-luna: <b>10,667</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-4">Summary</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+        <tbody>
+          <tr><td>Is output grounding safer than text?</td><td><b>Yes.</b> No false merges where name-match and sentence-embedding judges merge 5 of 6 hard negatives.</td></tr>
+          <tr><td>What does that safety cost?</td><td>About half of the mergeable pairs; almost all misses are PERCEPTUAL pairs labelled SEMANTIC_PRESERVING, a threshold-placement issue.</td></tr>
+          <tr><td>Does it hold on real code?</td><td>Yes. 23/25 fork filters are certified EXACT, and 7 of 17 published same-operation pairs are not certified mergeable.</td></tr>
+          <tr><td>Does it scale?</td><td>Candidate growth is n<sup>1.13</sup>, and 55% of pairs are decided before any learned backend runs.</td></tr>
+          <tr><td>Does it extend beyond deterministic operators?</td><td>Yes, as a feasibility result: 6/6 self-pair checks and 2/2 hard negatives pass for SAM 2.1 and DAv2.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="limitations">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Limitations and Open Items</h2>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-narrow">
+        <thead><tr><th>Item</th><th>Status</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Adjudication of the 26 non-DISTINCT hard negatives</td><td><span class="tag is-warning">pending (human)</span></td><td>Decides whether the hard-negative bound is 4.25% or 6.7%.</td></tr>
+          <tr><td>Independent review of the merge-gate fix</td><td><span class="tag is-warning">pending (human)</span></td><td>The completeness audit was a self-review.</td></tr>
+          <tr><td>Baseline ladder scored against oracle labels (AUPRC)</td><td><span class="tag is-light">pending (code)</span></td><td>Corpus-A skill ids not yet wired into the ladder.</td></tr>
+          <tr><td>Corpus B (ComfyUI)</td><td><span class="tag is-danger">blocked</span></td><td>Requires disposable-VM containment.</td></tr>
+          <tr><td>PERCEPTUAL recall (0.044) and COMPLEMENTARY detector</td><td><span class="tag is-info">open methods work</span></td><td>The commutation test is necessary but not sufficient.</td></tr>
+          <tr><td>Downstream task-success studies</td><td><span class="tag is-light">machinery built</span></td><td>No downstream results are reported yet.</td></tr>
+          <tr><td>Dependence on vision backbones</td><td><span class="tag is-light">inherent</span></td><td>Verdicts inherit the biases of LPIPS, DINO and CLIP; taking the max over DINO and CLIP mitigates but does not remove this.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@misc{ishraq2026viscurate,
+  title        = {{VisCurate}: Evaluating Behavioral Equivalence of Visual Skills},
+  author       = {Ishraq, Md Farhan and Ishmam, Md Farhan and Joarder, Reaz Hassan and Kabir, Md Hasanul},
+  year         = {2026},
+  note         = {Manuscript under review (WACV 2027, Round 2)},
+  howpublished = {\url{https://github.com/farhanishraq17/VisCurate-}}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://github.com/farhanishraq17/VisCurate-" aria-label="Code">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            The website template is borrowed from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelector('.navbar-burger').addEventListener('click', function () {
+    this.classList.toggle('is-active');
+    document.querySelector('.navbar-menu').classList.toggle('is-active');
+  });
+</script>
+
+</body>
+</html>

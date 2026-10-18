@@ -1,0 +1,103 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.footer .icon-link {
+  font-size: 25px;
+  color: #000;
+}
+
+.link-block a {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.vc {
+  font-variant: small-caps;
+}
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser,
+.publication-title,
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+  color: #555;
+  font-weight: bold;
+}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+/* VisCurate additions */
+
+.figure-img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.caption {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: justify;
+  margin-top: 0.5rem;
+}
+
+.content pre.mermaid {
+  background: none;
+  text-align: center;
+  padding: 0;
+}
+
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.stats .title {
+  font-family: 'Google Sans', sans-serif;
+  margin-bottom: 0.25rem;
+}
+
+.stats p:last-child {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.table tr.ours {
+  font-weight: 600;
+  background: #eef6fc;
+}
+
+.section h3.title {
+  margin-top: 2.5rem;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.content pre.mermaid.wide svg {
+  min-width: 800px;
+}
