@@ -346,14 +346,15 @@ table.actions th.grp {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.7rem 1.1rem;
+  padding: 0.85rem 1.25rem;
   background: #faf6f6;
   border-bottom: 1px solid #f1e8e8;
-  font-size: 0.9rem;
 }
 
 .slider-title {
-  font-weight: 600;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #333;
 }
 

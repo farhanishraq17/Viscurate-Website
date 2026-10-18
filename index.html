@@ -232,44 +232,44 @@
         <button class="slider-tab" type="button" data-go="3"><i class="fas fa-chart-line"></i> Scalability</button>
       </div>
       <div class="slider-frame">
-        <div class="slider-head"><span class="slider-title">Figure 2 &middot; Mean F1 by corruption rate</span><span class="slider-count">1 / 6</span></div>
+        <div class="slider-head"><span class="slider-title">Mean F1 by corruption rate</span><span class="slider-count">1 / 6</span></div>
         <div class="slider-body">
           <button class="slider-arrow prev" type="button" aria-label="Previous figure"><i class="fas fa-chevron-left"></i></button>
           <div class="slides" tabindex="0" aria-label="Result figures">
-            <figure class="slide" data-title="Figure 2 &middot; Mean F1 by corruption rate">
+            <figure class="slide" data-title="Mean F1 by corruption rate">
               <a class="fig-zoom" href="./static/images/f1_by_rho.png"><img src="./static/images/f1_by_rho.png"
                  alt="Mean F1 by corruption rate for GPT-5.5, Qwen 3.5 27B, Gemma 4 12B and Qwen 3.5 4B."></a>
               <figcaption>Mean F1 by corruption rate &rho; for the four strongest curators (<i>n</i> = 30 episodes per cell). Difficulty is
             not monotone in &rho; as GPT-5.5 improves as defects multiply, Qwen 3.5 27B stays flat, and the smaller
             models collapse.</figcaption>
             </figure>
-            <figure class="slide" data-title="Figure A.2 &middot; Runs ended with the END action">
+            <figure class="slide" data-title="Runs ended with the END action">
               <a class="fig-zoom" href="./static/images/ended_rate.png"><img src="./static/images/ended_rate.png"
                  alt="Bar chart of the share of runs each model ended with the END action."></a>
               <figcaption>Percentage of runs that the models have ended using the <span class="vc">End</span> action.</figcaption>
             </figure>
-            <figure class="slide" data-title="Figure A.1 &middot; Per-relation quality of the verifier">
+            <figure class="slide" data-title="Per-relation quality of the verifier">
               <a class="fig-zoom" href="./static/images/relation_quality.svg"><img src="./static/images/relation_quality.svg"
                  alt="Per-relation precision, recall and F1 of the verifier for subsumption, semantic-preserving, complementary and distinct."></a>
               <figcaption>Per-relation precision, recall, and F1 of the output-grounded verifier on <i>G</i><sub>0</sub> (one-vs-rest).
             <span class="vc">Exact</span> and <span class="vc">Perceptual</span> have no support in a clean reference
             graph and are omitted.</figcaption>
             </figure>
-            <figure class="slide" data-title="Figure A.3 &middot; Screening trade-off">
+            <figure class="slide" data-title="Screening trade-off">
               <a class="fig-zoom" href="./static/images/screening_tradeoff.svg"><img src="./static/images/screening_tradeoff.svg"
                  alt="Merge recall and share of pairs discarded as the screening neighbour count k grows."></a>
               <figcaption>Screening trade-off across neighbor count <i>k</i> at radius 0.05, over ten corrupted instances (80 mergeable
             positives, 76,031 pairs). Merge recall saturates at <i>k</i> = 10 while 95.1% of pairs are still discarded,
             and the curves are insensitive to radius from 0.05 to 2.0.</figcaption>
             </figure>
-            <figure class="slide" data-title="Figure A.4 &middot; Candidate-set growth">
+            <figure class="slide" data-title="Candidate-set growth">
               <a class="fig-zoom" href="./static/images/candidate_growth.svg"><img src="./static/images/candidate_growth.svg"
                  alt="Candidate-set size and share of all pairs proposed by screening as the library subsample grows."></a>
               <figcaption>Candidate-set growth over nested random subsamples of <i>L</i><sub>0</sub>. The log-log fit
             |<i>C</i>| = 2.38&thinsp;<i>n</i><sup>1.13</sup> (<i>R</i><sup>2</sup> = 0.998) is close to linear, and the
             share of all pairs that screening proposes falls from 66.7% at <i>n</i> = 10 to 8.2% at <i>n</i> = 100.</figcaption>
             </figure>
-            <figure class="slide" data-title="Figure A.5 &middot; Cache footprint by library size">
+            <figure class="slide" data-title="Cache footprint by library size">
               <a class="fig-zoom" href="./static/images/cache_footprint.svg"><img src="./static/images/cache_footprint.svg"
                  alt="Cache footprint by library size for raw output caches and features-only caches, on a log scale."></a>
               <figcaption>Cache footprint by library size for (a) raw output sets and (b) backend features only. The measured unit is
