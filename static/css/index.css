@@ -42,8 +42,8 @@ body {
   display: inline-block;
 }
 
-/* Institution logos sit in the hero's top corners; on narrower screens they
-   form a row above the title so they never overlap it. */
+/* Institution logos sit beside the title on screens 1280px and wider; on
+   narrower screens they form a row above the title so they never overlap it. */
 .institution-logos {
   display: flex;
   justify-content: space-between;
@@ -53,11 +53,11 @@ body {
 
 .institution-logos img {
   display: block;
-  height: 80px;
+  height: 120px;
   width: auto;
 }
 
-@media screen and (min-width: 1216px) {
+@media screen and (min-width: 1280px) {
   .hero {
     position: relative;
   }
@@ -67,6 +67,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    padding: 2.25rem 1rem 0;
     pointer-events: none;
   }
 
@@ -81,7 +82,7 @@ body {
   }
 
   .institution-logos img {
-    height: 56px;
+    height: 88px;
   }
 }
 
