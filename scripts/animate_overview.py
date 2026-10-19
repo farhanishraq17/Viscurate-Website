@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PDF = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "VisCurate_Paper_Contents/figures/mainDiagramV3.2.pdf"
 OUT = ROOT / "static/images/overview_anim.svg"
 
-GAP, FADE, HOLD, END = 0.75, 0.8, 8.0, 1.0  # seconds: between steps, per-step fade, full-diagram hold, fade-out
+GAP, FADE, HOLD, END = 0.5, 0.53, 5.33, 0.67  # seconds: between steps, per-step fade, full-diagram hold, fade-out
 
 # (x0, y0, x1, y1) in reveal order. None = always visible.
 STEPS = [
