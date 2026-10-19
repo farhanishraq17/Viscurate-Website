@@ -139,8 +139,13 @@
           <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
           <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <input class="player-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Animation position">
+        <input class="player-range player-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Animation position">
         <span class="player-time">0:00 / 0:00</span>
+        <label class="player-speed">
+          <span>Speed</span>
+          <input class="player-range player-rate" type="range" min="1" max="2.5" step="0.25" value="1" aria-label="Animation speed">
+          <span class="player-rate-value">1&times;</span>
+        </label>
       </div>
     </div>
   </div>
@@ -421,6 +426,12 @@
     seek.addEventListener('input', function () {
       anims.forEach(function (a) { a.currentTime = +seek.value; });
       show(+seek.value);
+    });
+    const rate = bar.querySelector('.player-rate');
+    rate.addEventListener('input', function () {
+      anims.forEach(function (a) { a.playbackRate = +rate.value; });
+      bar.querySelector('.player-rate-value').textContent = +rate.value + '×';
+      rate.style.setProperty('--p', (rate.value - rate.min) / (rate.max - rate.min) * 100 + '%');
     });
     (function tick() {
       if (playing && !dragging) show(anims[0].currentTime % total);

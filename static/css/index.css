@@ -42,9 +42,10 @@ body {
   display: inline-block;
 }
 
-/* Institution logos sit beside the title on screens 1024px and wider: the
-   hero's text column is narrowed just enough to leave room for them. On
-   narrower screens there is no room, so they form a row above the title. */
+/* Institution logos sit just outside the title column on screens 1024px and
+   wider. The title column keeps its full 960px where it can (so the title's
+   first line stays long) and the logos shrink a little on narrower laptops;
+   below 1024px there is no room, so they form a row above the title. */
 .institution-logos {
   display: flex;
   justify-content: space-between;
@@ -60,15 +61,18 @@ body {
 
 @media screen and (min-width: 1024px) {
   .hero {
+    --logo: clamp(90px, calc((100vw - 960px) / 2 - 2.5rem), 150px);
+    --hero-w: min(960px, calc(100vw - 2 * (2.5rem + var(--logo))));
     position: relative;
   }
 
   .institution-logos {
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
-    padding: 2.25rem 1rem 0;
+    left: 50%;
+    width: calc(var(--hero-w) + 2 * (var(--logo) + 1rem));
+    padding: 2.25rem 0 0;
+    transform: translateX(-50%);
     pointer-events: none;
   }
 
@@ -77,11 +81,11 @@ body {
   }
 
   .institution-logos img {
-    height: 150px;
+    height: var(--logo);
   }
 
   .hero .hero-body .container {
-    max-width: min(960px, calc(100vw - 2 * (2.5rem + 150px)));
+    max-width: var(--hero-w);
   }
 }
 
@@ -535,6 +539,7 @@ table.cascade td.step-cell {
 
 .player-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.75rem;
@@ -583,10 +588,9 @@ table.cascade td.step-cell {
   color: #555;
 }
 
-/* The seek line fills dark red up to the current position (--p is set by the script). */
-.player-seek {
+/* Both sliders fill dark red up to the current value (--p is set by the script). */
+.player-range {
   --p: 0%;
-  flex: 1;
   height: 4px;
   margin: 0;
   border-radius: 2px;
@@ -597,12 +601,12 @@ table.cascade td.step-cell {
   transition: height 0.15s;
 }
 
-.player-seek:hover,
-.player-seek:focus-visible {
+.player-range:hover,
+.player-range:focus-visible {
   height: 6px;
 }
 
-.player-seek::-webkit-slider-thumb {
+.player-range::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border: 0;
@@ -612,7 +616,7 @@ table.cascade td.step-cell {
   appearance: none;
 }
 
-.player-seek::-moz-range-thumb {
+.player-range::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border: 0;
@@ -620,29 +624,36 @@ table.cascade td.step-cell {
   background: #8b0000;
 }
 
-/* Large screens: everything 1.25x larger and a wider content column.
-   Raising the root font size scales every rem-based size; the fixed
-   pixel sizes above are scaled here by hand. */
-@media screen and (min-width: 1408px) {
-  html {
-    font-size: 20px;
-  }
+.player-seek {
+  flex: 1 1 10rem;
+}
 
+.player-speed {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.player-rate {
+  width: 6rem;
+}
+
+.player-rate-value {
+  min-width: 2.6rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #8b0000;
+}
+
+/* Large screens: a wider content column, with the figure slider and the
+   taxonomy table sized to use it. Text stays at its normal size. */
+@media screen and (min-width: 1408px) {
   .container.is-max-desktop {
     max-width: 1200px;
-  }
-
-  .hero .hero-body .container {
-    max-width: min(1200px, calc(100vw - 2 * (2.5rem + 188px)));
-  }
-
-  .institution-logos img {
-    height: 188px;
-  }
-
-  .section-title::after {
-    width: 70px;
-    height: 4px;
   }
 
   .cascade {
