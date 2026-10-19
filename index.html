@@ -206,9 +206,12 @@
     <h2 class="title is-3 section-title">Experimental Results</h2>
     <div class="slider">
       <div class="slider-tabs">
-        <button class="slider-tab" type="button" data-go="0"><i class="fas fa-robot"></i> Curation agents</button>
-        <button class="slider-tab" type="button" data-go="2"><i class="fas fa-check-double"></i> Verifier</button>
-        <button class="slider-tab" type="button" data-go="3"><i class="fas fa-chart-line"></i> Scalability</button>
+        <button class="slider-tab" type="button" data-go="0"><i class="fas fa-chart-line"></i> F1 vs. corruption</button>
+        <button class="slider-tab" type="button" data-go="1"><i class="fas fa-flag-checkered"></i> Episode endings</button>
+        <button class="slider-tab" type="button" data-go="2"><i class="fas fa-check-double"></i> Verifier quality</button>
+        <button class="slider-tab" type="button" data-go="3"><i class="fas fa-filter"></i> Screening</button>
+        <button class="slider-tab" type="button" data-go="4"><i class="fas fa-chart-area"></i> Candidate growth</button>
+        <button class="slider-tab" type="button" data-go="5"><i class="fas fa-database"></i> Cache footprint</button>
       </div>
       <div class="slider-frame">
         <div class="slider-head"><span class="slider-title">Mean F1 by corruption rate</span><span class="slider-count">1 / 6</span></div>
@@ -362,8 +365,10 @@
   const track = document.querySelector('.slides');
   const slides = track.children;
   let current = 0;
+  let target = null;  // slide a button scrolled to; scroll events are ignored until it is reached
   function goTo(i) {
     i = (i + slides.length) % slides.length;
+    target = i;
     track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
     update(i);
   }
@@ -372,9 +377,11 @@
     document.querySelector('.slider-title').textContent = slides[i].dataset.title;
     document.querySelector('.slider-count').textContent = (i + 1) + ' / ' + slides.length;
     document.querySelectorAll('.slider-dot').forEach(function (d) { d.classList.toggle('is-active', +d.dataset.go === i); });
-    const tabs = [...document.querySelectorAll('.slider-tab')];
-    const tab = tabs.filter(function (t) { return +t.dataset.go <= i; }).pop();
+    const tabs = document.querySelectorAll('.slider-tab');
+    const tab = tabs[i];
     tabs.forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+    const tabBar = tab.parentNode;  // keep the active tab visible when the row scrolls (phones)
+    tabBar.scrollLeft = tab.offsetLeft - (tabBar.clientWidth - tab.offsetWidth) / 2;
   }
   document.querySelector('.slider-arrow.prev').addEventListener('click', function () { goTo(current - 1); });
   document.querySelector('.slider-arrow.next').addEventListener('click', function () { goTo(current + 1); });
@@ -383,7 +390,14 @@
   });
   track.addEventListener('scroll', function () {
     const i = Math.round(track.scrollLeft / track.clientWidth);
+    if (target !== null) {
+      if (i === target && Math.abs(track.scrollLeft - i * track.clientWidth) < 2) target = null;
+      return;
+    }
     if (i !== current) update(i);
+  });
+  ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (type) {
+    track.addEventListener(type, function () { target = null; }, { passive: true });
   });
   update(0);
 

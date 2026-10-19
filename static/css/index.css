@@ -319,6 +319,7 @@ table.cascade td.step-cell {
 
 /* Results slider: tabs, a framed scroll-snap track, arrows and numbered pagination. */
 .slider-tabs {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -495,6 +496,23 @@ table.cascade td.step-cell {
 }
 
 @media screen and (max-width: 768px) {
+  /* On phones the tabs form one row that scrolls sideways instead of wrapping. */
+  .slider-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .slider-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slider-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
   .slide {
     padding: 1rem 0.75rem 0.5rem;
   }
