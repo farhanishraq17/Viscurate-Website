@@ -123,7 +123,7 @@ css = [f".s{i}{{animation:k{i} {T:.2f}s ease-out infinite}}"
        f"@keyframes k{i}{{0%,{pct(GAP * i)}{{opacity:0;translate:0 3px}}"
        f"{pct(GAP * i + FADE)},{pct(T - END)}{{opacity:1;translate:0 0}}100%{{opacity:0}}}}"
        for i in sorted(used)]
-css.append("@media (prefers-reduced-motion:reduce){[class]{animation:none}}")
+css.append("@media (prefers-reduced-motion:reduce){svg [class]{animation:none}}")
 style = ET.Element(f"{{{SVG}}}style")
 style.text = "\n".join(css)
 svg.insert(0, style)

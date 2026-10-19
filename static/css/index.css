@@ -525,6 +525,101 @@ table.cascade td.step-cell {
   object-fit: contain;
 }
 
+/* Overview player: a play/pause button, a seek line and the elapsed time. */
+.player svg.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.player-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.player-bar[hidden] {
+  display: none;
+}
+
+.player-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #8b0000;
+  color: #fff;
+  cursor: pointer;
+}
+
+.player-toggle svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: currentColor;
+}
+
+.player .icon-play,
+.player.is-paused .icon-pause {
+  display: none;
+}
+
+.player.is-paused .icon-play {
+  display: block;
+}
+
+.player-time {
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: #555;
+}
+
+/* The seek line fills dark red up to the current position (--p is set by the script). */
+.player-seek {
+  --p: 0%;
+  flex: 1;
+  height: 4px;
+  margin: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right, #8b0000 var(--p), #e4dcdc var(--p));
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: height 0.15s;
+}
+
+.player-seek:hover,
+.player-seek:focus-visible {
+  height: 6px;
+}
+
+.player-seek::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: #8b0000;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.player-seek::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: #8b0000;
+}
+
 /* Large screens: everything 1.25x larger and a wider content column.
    Raising the root font size scales every rem-based size; the fixed
    pixel sizes above are scaled here by hand. */

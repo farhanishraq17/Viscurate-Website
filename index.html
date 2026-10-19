@@ -131,8 +131,18 @@
 <section class="section" id="overview">
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">Overview</h2>
-    <img class="figure-img" src="./static/images/overview_anim.svg"
-         alt="Overview of the VisCurate pipeline: (a) pairwise verification on shared probes assigns a behavioral relation; (b) an LLM curator proposes edits that are verified before the library is updated.">
+    <div class="player">
+      <img class="figure-img" src="./static/images/overview_anim.svg"
+           alt="Overview of the VisCurate pipeline: (a) pairwise verification on shared probes assigns a behavioral relation; (b) an LLM curator proposes edits that are verified before the library is updated.">
+      <div class="player-bar" hidden>
+        <button class="player-toggle" type="button" aria-label="Pause animation">
+          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <input class="player-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Animation position">
+        <span class="player-time">0:00 / 0:00</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -371,6 +381,54 @@
     if (i !== current) update(i);
   });
   update(0);
+
+  // Overview player: inline the animated SVG so its CSS animations can be paused and seeked.
+  // If the fetch fails (e.g. index.html opened from disk), the self-playing <img> stays.
+  const player = document.querySelector('.player');
+  const diagram = player.querySelector('img');
+  fetch(diagram.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (text) {
+    const svg = new DOMParser().parseFromString(text, 'image/svg+xml').documentElement;
+    if (svg.nodeName !== 'svg') return;
+    svg.classList.add('diagram');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', diagram.alt);
+    diagram.replaceWith(svg);
+    const anims = svg.getAnimations({ subtree: true });
+    if (!anims.length) return;  // reduced motion: the full diagram shows without controls
+    const total = anims[0].effect.getComputedTiming().duration;
+    const bar = player.querySelector('.player-bar');
+    const seek = bar.querySelector('.player-seek');
+    const toggle = bar.querySelector('.player-toggle');
+    const time = bar.querySelector('.player-time');
+    let playing = true, dragging = false;
+    const fmt = function (ms) { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+    function show(t) {
+      seek.value = t;
+      seek.style.setProperty('--p', (t / total * 100) + '%');
+      time.textContent = fmt(t) + ' / ' + fmt(total);
+    }
+    function setPlaying(p) {
+      playing = p;
+      anims.forEach(function (a) { p ? a.play() : a.pause(); });
+      player.classList.toggle('is-paused', !p);
+      toggle.setAttribute('aria-label', p ? 'Pause animation' : 'Play animation');
+    }
+    seek.max = total;
+    toggle.addEventListener('click', function () { setPlaying(!playing); });
+    svg.addEventListener('click', function () { setPlaying(!playing); });
+    seek.addEventListener('pointerdown', function () { dragging = true; });
+    seek.addEventListener('pointerup', function () { dragging = false; });
+    seek.addEventListener('input', function () {
+      anims.forEach(function (a) { a.currentTime = +seek.value; });
+      show(+seek.value);
+    });
+    (function tick() {
+      if (playing && !dragging) show(anims[0].currentTime % total);
+      requestAnimationFrame(tick);
+    })();
+    show(0);
+    bar.hidden = false;
+  }).catch(function () {});
 
   document.querySelector('.navbar-burger').addEventListener('click', function () {
     this.classList.toggle('is-active');
