@@ -524,3 +524,45 @@ table.cascade td.step-cell {
   max-height: 85vh;
   object-fit: contain;
 }
+
+/* Large screens: everything 1.25x larger and a wider content column.
+   Raising the root font size scales every rem-based size; the fixed
+   pixel sizes above are scaled here by hand. */
+@media screen and (min-width: 1408px) {
+  html {
+    font-size: 20px;
+  }
+
+  .container.is-max-desktop {
+    max-width: 1200px;
+  }
+
+  .hero .hero-body .container {
+    max-width: min(1200px, calc(100vw - 2 * (2.5rem + 188px)));
+  }
+
+  .institution-logos img {
+    height: 188px;
+  }
+
+  .section-title::after {
+    width: 70px;
+    height: 4px;
+  }
+
+  .cascade {
+    max-width: 825px;
+  }
+
+  .fig-zoom {
+    height: 525px;
+  }
+
+  .slide figcaption {
+    max-width: 900px;
+  }
+
+  .slider-arrow {
+    top: calc(1.25rem + 262px);
+  }
+}
