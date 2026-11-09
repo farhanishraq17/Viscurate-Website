@@ -14,4 +14,6 @@ Render one figure into the site (swap `-` for `_` in the file name):
 npx remotion render f1-by-rho ../static/videos/f1_by_rho.mp4 --image-format=png
 ```
 
-Compositions: `f1-by-rho`, `ended-rate`, `relation-quality`, `screening-tradeoff`, `candidate-growth`, `cache-footprint`.
+The 18-second overview video is the `explainer` composition (`src/Explainer.tsx`). Its images are real OpenCV skill outputs from `make_explainer_assets.py`.
+
+Compositions: `explainer`, `f1-by-rho`, `ended-rate`, `relation-quality`, `screening-tradeoff`, `candidate-growth`, `cache-footprint`.
