@@ -14,15 +14,15 @@ const { fontFamily } = loadFont("normal", {
 });
 loadFont("italic", { weights: ["400"], subsets: ["latin", "greek"] });
 
-const INK = "#222";
-const MUTED = "#666";
+export const INK = "#222";
+export const MUTED = "#666";
 const GRID = "#e2e2e2";
-const ACCENT = "#8b0000"; // the site's dark red
+export const ACCENT = "#8b0000"; // the site's dark red
 
-const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
-const POP = Easing.bezier(0.34, 1.56, 0.64, 1);
+export const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
+export const POP = Easing.bezier(0.34, 1.56, 0.64, 1);
 
-const useClock = () => {
+export const useClock = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;

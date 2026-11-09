@@ -98,6 +98,14 @@
   </div>
 </section>
 
+<section class="section" id="explainer">
+  <div class="container is-max-desktop">
+    <video class="explainer-video" src="./static/videos/viscurate_explainer.mp4" poster="./static/images/explainer_poster.jpg"
+           autoplay muted loop playsinline controls preload="auto"
+           aria-label="Explainer: two visual skills with the same description are run on the same images, their outputs are compared across a parameter grid, and the pair is assigned a behavioral relation."></video>
+  </div>
+</section>
+
 <section class="section" id="abstract">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
@@ -379,6 +387,7 @@
     v.play().catch(function (e) { if (e.name === 'NotAllowedError') v.poster = v.parentNode.href; });  // autoplay blocked: show the static figure
   }
   if (reduceMotion) {
+    document.querySelector('.explainer-video').pause();
     videos.forEach(function (v) { v.poster = v.parentNode.href; });
     document.querySelector('.slider-replay').hidden = true;
   }
