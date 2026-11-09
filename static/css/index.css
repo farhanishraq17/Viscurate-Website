@@ -384,6 +384,22 @@ table.cascade td.step-cell {
   color: #333;
 }
 
+.slider-replay {
+  margin-left: auto;
+  padding: 0.1rem 0.65rem;
+  border: 1px solid #e0d6d6;
+  border-radius: 999px;
+  background: #fff;
+  color: #8b0000;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.slider-replay:hover {
+  background: #faf0f0;
+}
+
 .slider-count {
   flex-shrink: 0;
   padding: 0.1rem 0.65rem;
@@ -424,7 +440,7 @@ table.cascade td.step-cell {
   cursor: zoom-in;
 }
 
-.fig-zoom img {
+.fig-zoom video {
   width: 100%;
   height: 100%;
   object-fit: contain;
